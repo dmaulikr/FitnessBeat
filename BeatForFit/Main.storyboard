@@ -107,7 +107,7 @@
         <!--Playlist-->
         <scene sceneID="bKR-Yl-uiC">
             <objects>
-                <viewController id="8AW-ws-Kte" sceneMemberID="viewController">
+                <viewController id="8AW-ws-Kte" customClass="PlaylistViewController" customModule="BeatForFit" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Mr5-bG-O4t"/>
                         <viewControllerLayoutGuide type="bottom" id="aLa-Vc-UcC"/>
@@ -115,9 +115,39 @@
                     <view key="view" contentMode="scaleToFill" id="ucc-gx-I2E">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="npo-y2-EOw">
+                                <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="8AW-ws-Kte" id="2uq-2v-DSo"/>
+                                    <outlet property="delegate" destination="8AW-ws-Kte" id="4cf-t1-R33"/>
+                                </connections>
+                            </tableView>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qtp-aF-owK">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <items>
+                                    <navigationItem title="Playlist" id="Bca-Ai-chK">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="play" id="hC3-tw-qFK">
+                                            <connections>
+                                                <action selector="playPlaylist:" destination="8AW-ws-Kte" id="cEZ-bT-frA"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Clear" id="Jtg-sG-3O4">
+                                            <connections>
+                                                <action selector="cleanPlaylist:" destination="8AW-ws-Kte" id="Ppc-V0-WNe"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Playlist" id="Jvq-xh-i57"/>
+                    <connections>
+                        <outlet property="table" destination="npo-y2-EOw" id="e6l-y7-RXn"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q7t-qo-v8M" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

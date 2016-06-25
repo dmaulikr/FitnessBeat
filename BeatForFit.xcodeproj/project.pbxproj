@@ -18,6 +18,8 @@
 		846592821D1980BD006A4FF7 /* TempiDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465927D1D1980BD006A4FF7 /* TempiDSP.swift */; };
 		846592831D1980BD006A4FF7 /* TempiUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8465927E1D1980BD006A4FF7 /* TempiUtilities.swift */; };
 		846592851D1C0BF7006A4FF7 /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846592841D1C0BF7006A4FF7 /* Semaphore.swift */; };
+		846CF7381D1E7F26007982FA /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846CF7371D1E7F26007982FA /* PlaylistViewController.swift */; };
+		846CF73A1D1E7F41007982FA /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846CF7391D1E7F41007982FA /* PlayerViewController.swift */; };
 		848315311D19591F007104E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848315301D19591F007104E9 /* AppDelegate.swift */; };
 		8483153A1D19591F007104E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 848315391D19591F007104E9 /* Assets.xcassets */; };
 		8483153D1D19591F007104E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8483153B1D19591F007104E9 /* LaunchScreen.storyboard */; };
@@ -46,6 +48,8 @@
 		8465927D1D1980BD006A4FF7 /* TempiDSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempiDSP.swift; sourceTree = "<group>"; };
 		8465927E1D1980BD006A4FF7 /* TempiUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempiUtilities.swift; sourceTree = "<group>"; };
 		846592841D1C0BF7006A4FF7 /* Semaphore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Semaphore.swift; sourceTree = "<group>"; };
+		846CF7371D1E7F26007982FA /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
+		846CF7391D1E7F41007982FA /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		8483152D1D19591F007104E9 /* BeatForFit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeatForFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848315301D19591F007104E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		848315391D19591F007104E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,6 +113,8 @@
 			children = (
 				8465926D1D196556006A4FF7 /* BPMDetecting */,
 				8465926A1D195B2F006A4FF7 /* LibraryViewController.swift */,
+				846CF7371D1E7F26007982FA /* PlaylistViewController.swift */,
+				846CF7391D1E7F41007982FA /* PlayerViewController.swift */,
 				846592621D195AF2006A4FF7 /* Main.storyboard */,
 				846592631D195AF2006A4FF7 /* CellForLibraryTable.xib */,
 				846592641D195AF2006A4FF7 /* Song.swift */,
@@ -240,8 +246,10 @@
 				846592851D1C0BF7006A4FF7 /* Semaphore.swift in Sources */,
 				8465926B1D195B2F006A4FF7 /* LibraryViewController.swift in Sources */,
 				848315311D19591F007104E9 /* AppDelegate.swift in Sources */,
+				846CF73A1D1E7F41007982FA /* PlayerViewController.swift in Sources */,
 				846592801D1980BD006A4FF7 /* TempiFFT.swift in Sources */,
 				846592811D1980BD006A4FF7 /* TempiPeakDetector.swift in Sources */,
+				846CF7381D1E7F26007982FA /* PlaylistViewController.swift in Sources */,
 				8465927F1D1980BD006A4FF7 /* TempiBeatDetector.swift in Sources */,
 				846592831D1980BD006A4FF7 /* TempiUtilities.swift in Sources */,
 				846592821D1980BD006A4FF7 /* TempiDSP.swift in Sources */,
