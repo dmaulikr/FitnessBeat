@@ -13,7 +13,7 @@ import MediaPlayer
 class PlaylistViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let defaults = NSUserDefaults.standardUserDefaults()
-    let defaultPlaylist = "Playlistsogs"
+    let defaultPlaylist = "Playlistsongs"
     
     override func viewDidLoad() {
         //SetUp Table
@@ -101,6 +101,7 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
         playlistSongs.removeAll()
         playlistSongsList.removeAll()
         table.reloadData()
+        defaults.setObject(playlistSongsList, forKey: defaultPlaylist)
     }
     
     func findSongWithPersistentIdString(persistentIDString: [String : Float]) {

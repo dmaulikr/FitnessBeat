@@ -24,6 +24,12 @@
 		8483153A1D19591F007104E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 848315391D19591F007104E9 /* Assets.xcassets */; };
 		8483153D1D19591F007104E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8483153B1D19591F007104E9 /* LaunchScreen.storyboard */; };
 		848315481D19591F007104E9 /* BeatForFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848315471D19591F007104E9 /* BeatForFitTests.swift */; };
+		84B5820D1D215AC6005AEB18 /* TableWithSongs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B5820C1D215AC6005AEB18 /* TableWithSongs.swift */; };
+		84B5820F1D216342005AEB18 /* DataForTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B5820E1D216342005AEB18 /* DataForTable.swift */; };
+		84B582111D2174F0005AEB18 /* BpmDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B582101D2174F0005AEB18 /* BpmDetector.swift */; };
+		84B582131D217994005AEB18 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B582121D217994005AEB18 /* ProgressBar.swift */; };
+		84B582151D218003005AEB18 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B582141D218003005AEB18 /* Storage.swift */; };
+		84B582171D219885005AEB18 /* SongPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B582161D219885005AEB18 /* SongPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +64,12 @@
 		848315431D19591F007104E9 /* BeatForFitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeatForFitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		848315471D19591F007104E9 /* BeatForFitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatForFitTests.swift; sourceTree = "<group>"; };
 		848315491D19591F007104E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84B5820C1D215AC6005AEB18 /* TableWithSongs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableWithSongs.swift; sourceTree = "<group>"; };
+		84B5820E1D216342005AEB18 /* DataForTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForTable.swift; sourceTree = "<group>"; };
+		84B582101D2174F0005AEB18 /* BpmDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BpmDetector.swift; sourceTree = "<group>"; };
+		84B582121D217994005AEB18 /* ProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		84B582141D218003005AEB18 /* Storage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		84B582161D219885005AEB18 /* SongPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +136,12 @@
 				8483153B1D19591F007104E9 /* LaunchScreen.storyboard */,
 				8483153E1D19591F007104E9 /* Info.plist */,
 				846592841D1C0BF7006A4FF7 /* Semaphore.swift */,
+				84B5820C1D215AC6005AEB18 /* TableWithSongs.swift */,
+				84B5820E1D216342005AEB18 /* DataForTable.swift */,
+				84B582101D2174F0005AEB18 /* BpmDetector.swift */,
+				84B582121D217994005AEB18 /* ProgressBar.swift */,
+				84B582141D218003005AEB18 /* Storage.swift */,
+				84B582161D219885005AEB18 /* SongPicker.swift */,
 			);
 			path = BeatForFit;
 			sourceTree = "<group>";
@@ -241,10 +259,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84B5820F1D216342005AEB18 /* DataForTable.swift in Sources */,
 				846592681D195AF2006A4FF7 /* Song.swift in Sources */,
 				846592691D195AF2006A4FF7 /* CellForLibrary.swift in Sources */,
+				84B5820D1D215AC6005AEB18 /* TableWithSongs.swift in Sources */,
 				846592851D1C0BF7006A4FF7 /* Semaphore.swift in Sources */,
 				8465926B1D195B2F006A4FF7 /* LibraryViewController.swift in Sources */,
+				84B582171D219885005AEB18 /* SongPicker.swift in Sources */,
+				84B582131D217994005AEB18 /* ProgressBar.swift in Sources */,
+				84B582111D2174F0005AEB18 /* BpmDetector.swift in Sources */,
 				848315311D19591F007104E9 /* AppDelegate.swift in Sources */,
 				846CF73A1D1E7F41007982FA /* PlayerViewController.swift in Sources */,
 				846592801D1980BD006A4FF7 /* TempiFFT.swift in Sources */,
@@ -252,6 +275,7 @@
 				846CF7381D1E7F26007982FA /* PlaylistViewController.swift in Sources */,
 				8465927F1D1980BD006A4FF7 /* TempiBeatDetector.swift in Sources */,
 				846592831D1980BD006A4FF7 /* TempiUtilities.swift in Sources */,
+				84B582151D218003005AEB18 /* Storage.swift in Sources */,
 				846592821D1980BD006A4FF7 /* TempiDSP.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -168,7 +168,7 @@
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ew6-ft-kYd">
                                 <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                                 <items>
-                                    <navigationItem title="Title" id="8RT-IU-p4B">
+                                    <navigationItem title="Choose songs for playlist" id="8RT-IU-p4B">
                                         <barButtonItem key="leftBarButtonItem" systemItem="add" id="ypn-sx-SIx">
                                             <connections>
                                                 <action selector="presentPicker:" destination="I4C-Nr-wYJ" id="1GO-M9-FF0"/>
