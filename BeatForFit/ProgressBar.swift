@@ -20,6 +20,7 @@ class ProgressBar : NSObject {
             dispatch_async(dispatch_get_main_queue(),{
                 self.progress.setProgress(fractionalProgress, animated: animated)
                 if fractionalProgress == 1 {
+                    //reload table when analize complete 
                     NSNotificationCenter.defaultCenter().postNotificationName("load", object: nil)
                     sleep(1)
                 }

@@ -13,17 +13,9 @@ class BpmDetector: NSObject {
     //detecting bpm
     private let beatDetector: TempiBeatDetector = TempiBeatDetector()
     let semaphore = Semaphore(value: 0)
-    let defaults = NSUserDefaults.standardUserDefaults()
-        
-    let defaultSongs = "Songs"
-    let storage: Storage
-
-    init(storage: Storage) {
-        self.storage = storage
-    }
+    let storage = Storage.sharedInstance
     
-    //detecting can not be parallel, but
-    //TODO: check is it efficient to create TempiBeatDetector instance in multithreading
+    //detecting can not be parallel
     func detect(inSong: Song) {
         
         beatDetector.fileAnalysisCompletionHandler =
@@ -42,14 +34,13 @@ class BpmDetector: NSObject {
     func setBpm(bpm: Float, song: Song) {
         song.bpm = bpm
         semaphore.signal()
-        storage.storedSongs[song.id!] = bpm
     }
     
     //it's executing in background and showing progress bar
     func analize(progressBar: ProgressBar) {
-        for songs in storage.allSongs {
-            if songs.bpm == nil {
-                detect(songs)
+        for song in storage.songs {
+            if song.bpm == nil {
+                detect(song)
                 //wait until detection finished and then continue
                 semaphore.wait()
                 if (progressBar.counter<progressBar.amountOFAnalizingSongs) {
@@ -61,8 +52,7 @@ class BpmDetector: NSObject {
         }
         progressBar.counter = 0
         progressBar.amountOFAnalizingSongs = 0
-        storage.sortByBpm()
-        defaults.setObject(storage.storedSongs, forKey: defaultSongs)
+        //storage.sortAllSongsByBpm()
     }
 
     

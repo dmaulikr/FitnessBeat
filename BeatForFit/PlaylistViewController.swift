@@ -12,8 +12,8 @@ import MediaPlayer
 
 class PlaylistViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    let defaults = NSUserDefaults.standardUserDefaults()
-    let defaultPlaylist = "Playlistsongs"
+    let storage = Storage.sharedInstance
+    let player = Player.sharedInstance
     
     override func viewDidLoad() {
         //SetUp Table
@@ -27,35 +27,9 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        defaults.setObject(playlistSongsList, forKey: defaultPlaylist)
-    }
-    
-    //set up playlist every time view appear
-    /*
-    override func viewWillAppear(animated: Bool) {
-        playlistSongsList = defaults.objectForKey(defaultPlaylist) as? [String: Float] ?? [String: Float]()
-        if playlistSongsList.count > 0 {
-            print("tring to find")
-            print(playlistSongsList)
-            findSongWithPersistentIdString(playlistSongsList)
-        }
-        table.reloadData()
-    }
-    */
-    
     override func viewDidAppear(animated: Bool) {
-        playlistSongsList = defaults.objectForKey(defaultPlaylist) as? [String: Float] ?? [String: Float]()
-        if playlistSongsList.count > 0 {
-            print(playlistSongsList)
-            findSongWithPersistentIdString(playlistSongsList)
-        }
         table.reloadData()
     }
-    
-    //Collections
-    var playlistSongs = [Song]()
-    var playlistSongsList = [String: Float]()
     
     //playlist table
     @IBOutlet var table: UITableView!
@@ -63,13 +37,14 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     var nubOfRows = 0
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return playlistSongs.count
+        return storage.playlistIndexes.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! CellForLibrary
-        let song = playlistSongs[indexPath.row]
+       // let song = storage.playlistSongs[indexPath.row]
+        let song = storage.songs[storage.playlistIndexes[indexPath.row]]
         cell.set(song)
         return cell
     }
@@ -83,8 +58,8 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             // handle delete (by removing the data from your array and updating the tableview)
-            playlistSongsList.removeValueForKey(playlistSongs[indexPath.row].id!)
-            playlistSongs.removeAtIndex(indexPath.row)
+            //storage.playlistSongs.removeAtIndex(indexPath.row)
+            storage.playlistIndexes.removeAtIndex(indexPath.row)
             table.reloadData()
         }
     }
@@ -92,31 +67,17 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     
     //play song
     @IBAction func playPlaylist(sender: AnyObject) {
-        
+        storage.generateArrayOfURL(true)
+        player.playArray(storage.arrayOfUrlPlaylist)
+        //TODO: highlight playing song
+        //TODO: play selected song in playlist 
     }
     
+        
     
     //Clean playlist
     @IBAction func cleanPlaylist(sender: AnyObject) {
-        playlistSongs.removeAll()
-        playlistSongsList.removeAll()
+        storage.playlistIndexes.removeAll()
         table.reloadData()
-        defaults.setObject(playlistSongsList, forKey: defaultPlaylist)
-    }
-    
-    func findSongWithPersistentIdString(persistentIDString: [String : Float]) {
-        playlistSongs.removeAll()
-        for songs in persistentIDString{
-            let predicate = MPMediaPropertyPredicate(value: songs.0, forProperty: MPMediaItemPropertyPersistentID)
-            let songQuery = MPMediaQuery()
-            songQuery.addFilterPredicate(predicate)
-            if let items = songQuery.items where items.count > 0 {
-                playlistSongs.append(Song.init(item: items[0], bpm: songs.1))
-            }
-        }
-        //sort by bpm
-        playlistSongs.sortInPlace {(song1: Song, song2: Song) -> Bool in
-            song1.bpm > song2.bpm
-        }
     }
 }

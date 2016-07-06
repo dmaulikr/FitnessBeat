@@ -19,7 +19,9 @@ class Song: NSObject {
     let artist : String?
     let album : String?
     
-    init(item: MPMediaItem, bpm: Float?) {
+    let index: Int?
+    
+    init(item: MPMediaItem, bpm: Float?, index: Int?) {
         URL = item.assetURL
         id = item.persistentID.description
         self.bpm = bpm
@@ -27,15 +29,6 @@ class Song: NSObject {
         image = item.artwork?.imageWithSize(CGSize(width: 39, height: 39))
         artist = item.artist
         album = item.albumTitle
-    }
-    
-    init(url: NSURL){
-        self.URL = url
-        self.album = "alb"
-        id = "id"
-        bpm = 0
-        name = "name"
-        image = nil
-        artist = "art"
+        self.index = index
     }
 }

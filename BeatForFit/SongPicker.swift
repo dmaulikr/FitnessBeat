@@ -11,27 +11,29 @@ import MediaPlayer
 
 class SongPicker : NSObject {
     
-    let storage : Storage
-    let progressBar : ProgressBar
-    let sender : UIViewController
-    private let detector : BpmDetector
+    let storage = Storage.sharedInstance //storage
+    let progressBar : ProgressBar //progress of analizing songs
+    let sender : UIViewController //view that contain progress bar
+    private let detector : BpmDetector //detecting bpm
     
-    init(storage: Storage, progressBar : ProgressBar, sender : UIViewController) {
-        self.storage = storage
+    init(progressBar : ProgressBar, sender : UIViewController) {
         self.progressBar = progressBar
         self.sender = sender
-        self.detector = BpmDetector(storage: storage)
+        self.detector = BpmDetector()
     }
     
 }
 
 extension SongPicker : MPMediaPickerControllerDelegate {
+    
+    //show media picker and set all picked songs
     func mediaPicker(mediaPicker: MPMediaPickerController,didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
         sender.dismissViewControllerAnimated(true, completion: {
             self.setCollectinOfSongs(mediaItemCollection)
         })
     }
     
+    //if no songs were choosen
     func mediaPickerDidCancel(mediaPicker: MPMediaPickerController) {
         sender.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -39,16 +41,16 @@ extension SongPicker : MPMediaPickerControllerDelegate {
     //add songs in collection that user choose in media picker
     func setCollectinOfSongs (mediaItemCollection: MPMediaItemCollection) {
         for songs in mediaItemCollection.items {
-            let exist = storage.storedSongs[songs.persistentID.description] != nil
-            if (songs.assetURL != nil && !exist) {
-                storage.allSongs.append(Song.init(item: songs, bpm:nil))
-                progressBar.amountOFAnalizingSongs += 1
-            }
-            else {
-                print("nil songs.assetURL or already exist")
-            }
+            //check is that song already in collection
+            guard (storage.storedSongs[songs.persistentID.description] == nil ) else {continue}
+            guard (songs.assetURL != nil ) else {continue}
+            let index = storage.songs.count
+            storage.songs.append(Song(item: songs, bpm: nil,index: index))
+            storage.storedSongs[songs.persistentID.description] = nil
+            storage.persistanceidIndex[songs.persistentID.description] = index
+            progressBar.amountOFAnalizingSongs += 1
         }
-        //analize in background
+        //analize(BPM) in background
         NSNotificationCenter.defaultCenter().postNotificationName("load", object: nil)
         dispatch_async(dispatch_get_global_queue(0, 0)) {
             self.detector.analize(self.progressBar)

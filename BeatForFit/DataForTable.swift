@@ -13,46 +13,66 @@ import UIKit
 class DataForTable: NSObject {
     
     let cellTableIdentifier : String
-    let defaultSongs : String
-    let defaults = NSUserDefaults.standardUserDefaults()
-    let storage : Storage
+    let storage = Storage.sharedInstance
     
-    
-    
-    init(storage: Storage, defaultSongs : String, cellTableIdentifier : String) {
-        self.storage = storage
+    init(cellTableIdentifier : String) {
         self.cellTableIdentifier = cellTableIdentifier
-        self.defaultSongs = defaultSongs
     }
 }
 
 extension DataForTable: UITableViewDataSource {
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return storage.allSongs.count
+        if section == 0 {return 1} else {
+        return storage.songs.count
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! CellForLibrary
-        let song = storage.allSongs[indexPath.row]
-        cell.set(song)
-        return cell
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCellWithIdentifier("noteCell", forIndexPath: indexPath) as UITableViewCell
+            cell.textLabel?.text = "Some songs may have double pace"
+            cell.detailTextLabel?.text = "Do 2 steps at one beat"
+            return cell
+        } else {
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! CellForLibrary
+            //let song = storage.allSongs[indexPath.row]
+           // let song = storage.allSongs.values[indexPath.row]
+            //let song = storage.getSong(indexPath.row)
+            let song = storage.songs[indexPath.row]
+            cell.set(song)
+            return cell
+        
+        }
     }
     
     //turn on deletion
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
+        if indexPath.section == 0 {return false}
+        else {return true}
     }
     
     //deletion func
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
-            storage.storedSongs.removeValueForKey(storage.allSongs[indexPath.row].id!)
-            storage.selectedSongs.removeValueForKey(storage.allSongs[indexPath.row].id!)
+            
+            storage.delSong(indexPath.row)
+            
+            /*
+            if let indexForPlaylist = storage.playlistSongs.indexOf(storage.allSongs[indexPath.row]) {
+                storage.playlistSongs.removeAtIndex(indexForPlaylist)
+            }
+            storage.storedAllSongs.removeValueForKey(storage.allSongs[indexPath.row].id!)
             storage.allSongs.removeAtIndex(indexPath.row)
+            
+            */
             tableView.reloadData()
-            defaults.setObject(storage.storedSongs, forKey: defaultSongs)
         }
     }
 

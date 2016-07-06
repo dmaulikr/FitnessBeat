@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class LibraryViewController : UIViewController { //, UITableViewDataSource, UITableViewDelegate {
+class LibraryViewController : UIViewController {
     
     //general
     private let semaphore = Semaphore(value: 0)
@@ -20,12 +20,10 @@ class LibraryViewController : UIViewController { //, UITableViewDataSource, UITa
     var progressBar: ProgressBar?
 
     //Identifiers
-    let defaultSongs = "Songs"
-    let defaultPlaylist = "Playlistsongs"
     let cellTableIdentifier = "CellForLibrary"
     
     //storage
-    var storage : Storage
+    let storage = Storage.sharedInstance
     
     //Media Picker
     var songPicker : SongPicker?
@@ -36,9 +34,8 @@ class LibraryViewController : UIViewController { //, UITableViewDataSource, UITa
     @IBOutlet var table : UITableView!
     
     required init?(coder aDecoder: NSCoder) {
-        self.storage = Storage()
-        self.dataSource = DataForTable(storage: storage, defaultSongs: defaultSongs, cellTableIdentifier: cellTableIdentifier)
-        self.tableDelegate = TableWithSongs(storage: storage)
+        self.dataSource = DataForTable(cellTableIdentifier: cellTableIdentifier)
+        self.tableDelegate = TableWithSongs()
         super.init(coder: aDecoder)
     }
 }
@@ -49,7 +46,7 @@ extension LibraryViewController {
         super.viewDidLoad()
 
         progressBar = ProgressBar(progress: progress)
-        songPicker = SongPicker(storage: storage, progressBar: progressBar!, sender: self)
+        songPicker = SongPicker(progressBar: progressBar!, sender: self)
         //Set up table
         table.registerClass(CellForLibrary.self, forCellReuseIdentifier: cellTableIdentifier)
         let nib = UINib(nibName: "CellForLibraryTable", bundle: nil)
@@ -59,6 +56,7 @@ extension LibraryViewController {
         table.dataSource = dataSource
         table.delegate = tableDelegate
         table.reloadData()
+        //reload data when notificate
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LibraryViewController.loadList(_:)),name:"load", object: nil)
         }
     
@@ -69,13 +67,11 @@ extension LibraryViewController {
     
     //save songs for playlist before changing view
     override func viewWillDisappear(animated: Bool) {
-        defaults.setObject(storage.selectedSongs, forKey: defaultPlaylist)
         if table.indexPathsForSelectedRows != nil {
             for row in table.indexPathsForSelectedRows! {
                 self.table.deselectRowAtIndexPath(row, animated: false)
             }
         }
-        storage.selectedSongs.removeAll()
     }
     
     //media picker
