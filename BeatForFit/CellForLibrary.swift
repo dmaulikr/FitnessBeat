@@ -23,7 +23,7 @@ class CellForLibrary: UITableViewCell {
         artist?.text = subtitle
         albumImage?.image = song.image
         if song.bpm != nil {
-            tempo?.text = Int((song.bpm)!).description
+            tempo?.text = song.bpm?.description
         } else {
             tempo?.text = song.bpm?.description
         }

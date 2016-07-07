@@ -32,7 +32,7 @@ class BpmDetector: NSObject {
     
     //set bpm when finished detecting
     func setBpm(bpm: Float, song: Song) {
-        song.bpm = bpm
+        song.bpm = Int(bpm)
         semaphore.signal()
     }
     
@@ -48,6 +48,16 @@ class BpmDetector: NSObject {
                 } else {
                     progressBar.counter -= 1
                 }
+                //set index of the song to bpm
+                guard let bpm = song.bpm else { print("no bpm yet"); continue}
+                guard let index = song.index else {print(" no index "); continue}
+                if var _ = storage.bpmIndexDictionary[bpm] {
+                    storage.bpmIndexDictionary[bpm]!.append(index)
+                } else {
+                    storage.bpmIndexDictionary[bpm] = [Int]()
+                    storage.bpmIndexDictionary[bpm]!.append(index)
+                }
+                
             }
         }
         progressBar.counter = 0

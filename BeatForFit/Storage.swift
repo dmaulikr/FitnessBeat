@@ -23,23 +23,25 @@ class Storage: NSObject {
     
     
     var playlistIndexes = [Int]()
-    var bpmIndexDictionary  = [Float : Int]()
+    var bpmIndexDictionary  = [Int : [Int]]()
     var songs = [Song]()
     var persistanceidIndex = [String : Int]()
     var arrayOfUrlPlaylist = [NSURL]()
     
-    var storedSongs = [String : Float]()
+    var storedSongs = [String : Int]()
     
-    let defaultAllSongs = "Songs"
-    let defaultPlaylist = "Playlistsogs"
-    let defaultIndex = "Index"
+    let defaultAllSongs = "Songs1"
+    let defaultPlaylist = "Playlistsogs1"
+    let defaultIndex = "Index1"
+    let defaultBpmIndex = "BpmIndex1"
     
     //set up and load
     private override init() {
         super.init()
         
+        bpmIndexDictionary = defaults.objectForKey(defaultBpmIndex) as? [Int : [Int]] ?? [Int : [Int]]()
         playlistIndexes = defaults.arrayForKey(defaultPlaylist) as? [Int] ?? [Int]()
-        storedSongs = defaults.objectForKey(defaultAllSongs) as? [String: Float] ?? [String: Float]()
+        storedSongs = defaults.objectForKey(defaultAllSongs) as? [String: Int] ?? [String: Int]()
         persistanceidIndex = defaults.objectForKey(defaultIndex) as? [String : Int] ?? [String : Int]()
         
         if storedSongs.count > 0 {
@@ -50,6 +52,7 @@ class Storage: NSObject {
     //save all data to USERDEFAULTS
     func saveALL() {
         storedSongs = copySongsInDictionary(songs)
+        defaults.setObject(bpmIndexDictionary, forKey: defaultBpmIndex)
         defaults.setObject(storedSongs, forKey: defaultAllSongs)
         defaults.setObject(playlistIndexes, forKey: defaultPlaylist)
         defaults.setObject(persistanceidIndex, forKey: defaultIndex)
@@ -57,6 +60,15 @@ class Storage: NSObject {
     
     func delSong(index: Int) {
         if let id = songs[index].id { persistanceidIndex.removeValueForKey(id)}
+        if let bpm = songs[index].bpm {
+            if var arrOfIndexWithBpm = bpmIndexDictionary[bpm] {
+                if let indexBpm = arrOfIndexWithBpm.indexOf(index) {
+                    arrOfIndexWithBpm.removeAtIndex(indexBpm)
+                    bpmIndexDictionary[bpm] = arrOfIndexWithBpm
+                }
+            }
+
+        }
         songs.removeAtIndex(index)
         if let indexInPlaylist =  playlistIndexes.indexOf(index) {
            playlistIndexes.removeAtIndex(indexInPlaylist)
@@ -65,7 +77,7 @@ class Storage: NSObject {
     }
     
     //convert saved in UserDefaults dictionaries to array of Songs TO DELETE
-    func findSongWithPersistentIdString1(persistentIDString: [String : Float]) -> [Song] {
+    func findSongWithPersistentIdString1(persistentIDString: [String : Int]) -> [Song] {
         var arrayOfSongs = [Song]()
         for songs in persistentIDString{
             let predicate = MPMediaPropertyPredicate(value: songs.0, forProperty: MPMediaItemPropertyPersistentID)
@@ -117,8 +129,8 @@ class Storage: NSObject {
     */
     
     //save array of Song to dictionary for storing in UserDefaults
-    func copySongsInDictionary(arrayOfSongs: [Song]) -> [String : Float] {
-        var dicOfSongs = [String : Float]()
+    func copySongsInDictionary(arrayOfSongs: [Song]) -> [String : Int] {
+        var dicOfSongs = [String : Int]()
         for song in arrayOfSongs {
             guard let songID = song.id else {
                 continue

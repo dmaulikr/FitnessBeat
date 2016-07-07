@@ -16,14 +16,38 @@ class PlayerViewController: UIViewController {
    // var audioPlayerDelegate = Player()
     let storage = Storage.sharedInstance
     let player = Player.sharedInstance
+    var currentBpmIndex = 0
+    var allBpm = [Int]()
     
     @IBOutlet var songLabel: UILabel!
     @IBOutlet var bpmLabel: UILabel!
     @IBAction func playButtonPushed(sender: UIButton) {
-        player.readFileIntoAVPlayer(storage.songs[1].URL!)
+        if player.isPrepared {
+            if player.avPlayer.playing {
+                player.avPlayer.pause()
+            } else {
+                player.playWithBpm((storage.bpmIndexDictionary.first?.0)!)
+            }
+        } else {
+            player.playWithBpm((storage.bpmIndexDictionary.first?.0)!)
+        }
     }
     @IBAction func nextSong(sender: UIButton) {
-        player.stopAVPLayer()
+        //implement next song
+        player.playNext()
+//        currentBpmIndex.1 += 1
+//        if storage.bpmIndexDictionary[allBpm[currentBpmIndex.0]]?.count > currentBpmIndex.1 {
+//            player.playNext()
+//        } else {
+//            currentBpmIndex.1 = 0
+//            currentBpmIndex.0 += 1
+//            if currentBpmIndex.0 < allBpm.count {
+//                player.playWithBpm(allBpm[currentBpmIndex.0])
+//            } else {
+//                currentBpmIndex.0 -= 1
+//                player.playWithBpm(allBpm[currentBpmIndex.0])
+//            }
+//        }
     }
     @IBAction func previousSong(sender: AnyObject) {
         player.toggleAVPlayer()
@@ -31,17 +55,31 @@ class PlayerViewController: UIViewController {
     @IBAction func doSlow(sender: AnyObject) {
     }
     @IBAction func doFast(sender: AnyObject) {
+        currentBpmIndex += 1
+        if currentBpmIndex < allBpm.count {
+            player.playWithBpm(allBpm[currentBpmIndex])
+        } else {
+            player.playWithBpm(allBpm[currentBpmIndex-1])
+        }
+        
     }
 }
 
 extension PlayerViewController {
     
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
     }
     
     override func viewDidAppear(animated: Bool) {
         //playArray(storage.arrayOfUrlPlaylist)
+        getAllBpm(storage.bpmIndexDictionary)
+        bpmLabel.text = allBpm.first?.description
+    }
+    
+    func getAllBpm(bpmDictionary : [Int : [Int]]) {
+        allBpm = bpmDictionary.keys.sort({ $0 < $1 }).flatMap({ $0 })
+        print(allBpm)
     }
 }
 

@@ -22,6 +22,7 @@ class Player : NSObject {
     var isPrepared = false
     var arrayOfUrl = [NSURL]()
     var songNumb = 0
+    var storage = Storage.sharedInstance
     
     
     /**
@@ -29,8 +30,29 @@ class Player : NSObject {
      The player instance needs to be an instance variable. Otherwise it will disappear before playing.
      */
     
+    func playNext() {
+        songNumb += 1
+        if songNumb != arrayOfUrl.count {
+            playQueue()
+        } else {
+            songNumb = 0
+        }
+    }
+    
     func playArray(arrayOfUrl : [NSURL]) {
         setQueue(arrayOfUrl)
+        stopAVPLayer()
+        playQueue()
+    }
+    
+    func playWithBpm(bpm: Int) {
+        if let indexes = storage.bpmIndexDictionary[bpm] {
+            for index in indexes {
+                if let url = storage.songs[index].URL {
+                    arrayOfUrl.append(url)
+                }
+            }
+        }
         stopAVPLayer()
         playQueue()
     }

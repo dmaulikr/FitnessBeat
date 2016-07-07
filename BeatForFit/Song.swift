@@ -13,7 +13,7 @@ class Song: NSObject {
     
     let URL : NSURL?
     let id : String?
-    var bpm : Float?
+    var bpm : Int?
     let name : String?
     let image : UIImage?
     let artist : String?
@@ -21,7 +21,7 @@ class Song: NSObject {
     
     let index: Int?
     
-    init(item: MPMediaItem, bpm: Float?, index: Int?) {
+    init(item: MPMediaItem, bpm: Int?, index: Int?) {
         URL = item.assetURL
         id = item.persistentID.description
         self.bpm = bpm

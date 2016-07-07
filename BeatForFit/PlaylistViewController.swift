@@ -57,8 +57,7 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     //deletion songs from playlist
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
-            // handle delete (by removing the data from your array and updating the tableview)
-            //storage.playlistSongs.removeAtIndex(indexPath.row)
+            // handle delete
             storage.playlistIndexes.removeAtIndex(indexPath.row)
             table.reloadData()
         }
@@ -67,10 +66,11 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     
     //play song
     @IBAction func playPlaylist(sender: AnyObject) {
+        guard storage.playlistIndexes.count != 0 else {return}
         storage.generateArrayOfURL(true)
         player.playArray(storage.arrayOfUrlPlaylist)
         //TODO: highlight playing song
-        //TODO: play selected song in playlist 
+        //TODO: play selected song in playlist
     }
     
         
@@ -78,6 +78,7 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     //Clean playlist
     @IBAction func cleanPlaylist(sender: AnyObject) {
         storage.playlistIndexes.removeAll()
+        storage.arrayOfUrlPlaylist.removeAll()
         table.reloadData()
     }
 }
