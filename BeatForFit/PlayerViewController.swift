@@ -22,46 +22,49 @@ class PlayerViewController: UIViewController {
     @IBOutlet var songLabel: UILabel!
     @IBOutlet var bpmLabel: UILabel!
     @IBAction func playButtonPushed(sender: UIButton) {
-        if player.isPrepared {
-            if player.avPlayer.playing {
-                player.avPlayer.pause()
-            } else {
-                player.playWithBpm((storage.bpmIndexDictionary.first?.0)!)
-            }
+        if player.isPlaying {
+            player.pauseTrack()
         } else {
-            player.playWithBpm((storage.bpmIndexDictionary.first?.0)!)
+            playCurrentBpm()
         }
     }
+    
+    func playCurrentBpm() {
+        var arrayOfUrl = [NSURL]()
+        if let bpm = Int(bpmLabel.text!) {
+            if let arrayOfIndexes = storage.bpmIndexDictionary[bpm] {
+                for index in arrayOfIndexes {
+                    if let url = storage.songs[index].URL {
+                        arrayOfUrl.append(url)
+                    }
+                }
+            }
+        }
+        player.setupPlayList(arrayOfUrl)
+        player.setupAudioPlayer()
+        player.playTrack()
+
+    }
+    
     @IBAction func nextSong(sender: UIButton) {
-        //implement next song
-        player.playNext()
-//        currentBpmIndex.1 += 1
-//        if storage.bpmIndexDictionary[allBpm[currentBpmIndex.0]]?.count > currentBpmIndex.1 {
-//            player.playNext()
-//        } else {
-//            currentBpmIndex.1 = 0
-//            currentBpmIndex.0 += 1
-//            if currentBpmIndex.0 < allBpm.count {
-//                player.playWithBpm(allBpm[currentBpmIndex.0])
-//            } else {
-//                currentBpmIndex.0 -= 1
-//                player.playWithBpm(allBpm[currentBpmIndex.0])
-//            }
-//        }
+        player.playNextTrack()
     }
     @IBAction func previousSong(sender: AnyObject) {
-        player.toggleAVPlayer()
+        player.playPrevTrack()
     }
     @IBAction func doSlow(sender: AnyObject) {
+        currentBpmIndex -= 1
+        guard currentBpmIndex >= 0 else {currentBpmIndex = 0; return}
+        print(currentBpmIndex)
+        bpmLabel.text = allBpm[currentBpmIndex].description
+        playCurrentBpm()
     }
     @IBAction func doFast(sender: AnyObject) {
         currentBpmIndex += 1
-        if currentBpmIndex < allBpm.count {
-            player.playWithBpm(allBpm[currentBpmIndex])
-        } else {
-            player.playWithBpm(allBpm[currentBpmIndex-1])
-        }
-        
+        guard currentBpmIndex < allBpm.count else {currentBpmIndex = allBpm.count - 1; return}
+        print(currentBpmIndex)
+        bpmLabel.text = allBpm[currentBpmIndex].description
+        playCurrentBpm()
     }
 }
 
@@ -74,7 +77,11 @@ extension PlayerViewController {
     override func viewDidAppear(animated: Bool) {
         //playArray(storage.arrayOfUrlPlaylist)
         getAllBpm(storage.bpmIndexDictionary)
-        bpmLabel.text = allBpm.first?.description
+        if player.isPlaying {
+            bpmLabel.text = player.currentBpm?.description
+        } else {
+            bpmLabel.text = allBpm.first?.description
+        }
     }
     
     func getAllBpm(bpmDictionary : [Int : [Int]]) {

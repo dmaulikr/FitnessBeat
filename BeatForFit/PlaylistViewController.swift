@@ -68,7 +68,9 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBAction func playPlaylist(sender: AnyObject) {
         guard storage.playlistIndexes.count != 0 else {return}
         storage.generateArrayOfURL(true)
-        player.playArray(storage.arrayOfUrlPlaylist)
+        player.setupPlayList(storage.arrayOfUrlPlaylist)
+        player.setupAudioPlayer()
+        player.playTrack()
         //TODO: highlight playing song
         //TODO: play selected song in playlist
     }

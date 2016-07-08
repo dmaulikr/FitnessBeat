@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84044E5E1D2FC01200433F19 /* MainPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84044E5D1D2FC01200433F19 /* MainPlayer.swift */; };
 		846592661D195AF2006A4FF7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 846592621D195AF2006A4FF7 /* Main.storyboard */; };
 		846592671D195AF2006A4FF7 /* CellForLibraryTable.xib in Resources */ = {isa = PBXBuildFile; fileRef = 846592631D195AF2006A4FF7 /* CellForLibraryTable.xib */; };
 		846592681D195AF2006A4FF7 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846592641D195AF2006A4FF7 /* Song.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		84044E5D1D2FC01200433F19 /* MainPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPlayer.swift; sourceTree = "<group>"; };
 		846592621D195AF2006A4FF7 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		846592631D195AF2006A4FF7 /* CellForLibraryTable.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CellForLibraryTable.xib; sourceTree = "<group>"; };
 		846592641D195AF2006A4FF7 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				84B582121D217994005AEB18 /* ProgressBar.swift */,
 				84B582141D218003005AEB18 /* Storage.swift */,
 				84B582161D219885005AEB18 /* SongPicker.swift */,
+				84044E5D1D2FC01200433F19 /* MainPlayer.swift */,
 			);
 			path = BeatForFit;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				846CF73A1D1E7F41007982FA /* PlayerViewController.swift in Sources */,
 				846592801D1980BD006A4FF7 /* TempiFFT.swift in Sources */,
 				846592811D1980BD006A4FF7 /* TempiPeakDetector.swift in Sources */,
+				84044E5E1D2FC01200433F19 /* MainPlayer.swift in Sources */,
 				846CF7381D1E7F26007982FA /* PlaylistViewController.swift in Sources */,
 				8465927F1D1980BD006A4FF7 /* TempiBeatDetector.swift in Sources */,
 				846592831D1980BD006A4FF7 /* TempiUtilities.swift in Sources */,

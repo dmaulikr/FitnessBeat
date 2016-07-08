@@ -39,7 +39,7 @@ class Storage: NSObject {
     private override init() {
         super.init()
         
-        bpmIndexDictionary = defaults.objectForKey(defaultBpmIndex) as? [Int : [Int]] ?? [Int : [Int]]()
+        //bpmIndexDictionary = defaults.objectForKey(defaultBpmIndex) as? [Int : [Int]] ?? [Int : [Int]]()
         playlistIndexes = defaults.arrayForKey(defaultPlaylist) as? [Int] ?? [Int]()
         storedSongs = defaults.objectForKey(defaultAllSongs) as? [String: Int] ?? [String: Int]()
         persistanceidIndex = defaults.objectForKey(defaultIndex) as? [String : Int] ?? [String : Int]()
@@ -47,12 +47,12 @@ class Storage: NSObject {
         if storedSongs.count > 0 {
             songs = findSongWithPersistentIdString1(storedSongs)
         }
+        generateBpmIndex()
     }
     
     //save all data to USERDEFAULTS
     func saveALL() {
         storedSongs = copySongsInDictionary(songs)
-        defaults.setObject(bpmIndexDictionary, forKey: defaultBpmIndex)
         defaults.setObject(storedSongs, forKey: defaultAllSongs)
         defaults.setObject(playlistIndexes, forKey: defaultPlaylist)
         defaults.setObject(persistanceidIndex, forKey: defaultIndex)
@@ -100,6 +100,34 @@ class Storage: NSObject {
                 if let Url = songs[index].URL {arrayOfUrlPlaylist.append(Url)}
             }
         }
+        print(arrayOfUrlPlaylist)
+    }
+    
+    func generateBpmIndex() {
+        for song in songs {
+            guard let bpm = song.bpm else { print("no bpm yet"); continue}
+            guard let index = song.index else {print(" no index "); continue}
+            if var _ = bpmIndexDictionary[bpm] {
+                bpmIndexDictionary[bpm]!.append(index)
+            } else {
+                bpmIndexDictionary[bpm] = [Int]()
+                bpmIndexDictionary[bpm]!.append(index)
+            }
+
+        }
+    }
+    
+    func getSongFromUrl(url: NSURL) -> Song? {
+//        let predicate = MPMediaPropertyPredicate(value: url, forProperty: MPMediaItemPropertyAssetURL )
+//        let songQuery = MPMediaQuery()
+//        songQuery.addFilterPredicate(predicate)
+//        if let items = songQuery.items where items.count > 0 { return Song(item: items[0], bpm: <#T##Int?#>, index: <#T##Int?#>)
+        for song in songs {
+            if song.URL == url {
+                return song
+            }
+        }
+        return nil
     }
     
     //convert saved in UserDefaults dictionaries to array of Songs
