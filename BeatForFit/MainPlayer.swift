@@ -175,7 +175,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
         self.isPlaying = true
         
         // set timer, so it will update played time lable every second.
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updatePlayedTimeLabel", userInfo: nil, repeats: true)
+        //self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updatePlayedTimeLabel", userInfo: nil, repeats: true)
         
         // play currently loaded track
         self.audioPlayer.play()

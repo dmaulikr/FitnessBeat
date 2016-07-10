@@ -21,14 +21,25 @@ class PlayerViewController: UIViewController {
     
     @IBOutlet var songLabel: UILabel!
     @IBOutlet var bpmLabel: UILabel!
+    @IBOutlet var repeatButtonOutlet: UIButton!
     @IBAction func playButtonPushed(sender: UIButton) {
         if player.isPlaying {
             player.pauseTrack()
+        } else if player.isPoused {
+            player.playTrack()
         } else {
-            playCurrentBpm()
+        playCurrentBpm()
         }
     }
     
+    @IBAction func repeatButton(sender: AnyObject) {
+        player.isRepeat = !player.isRepeat
+        if player.isRepeat {
+            repeatButtonOutlet.setTitle("🔁", forState: UIControlState.Normal)
+        } else {
+        repeatButtonOutlet.setTitle("↪️", forState: UIControlState.Normal)
+        }
+    }
     func playCurrentBpm() {
         var arrayOfUrl = [NSURL]()
         if let bpm = Int(bpmLabel.text!) {
@@ -43,14 +54,33 @@ class PlayerViewController: UIViewController {
         player.setupPlayList(arrayOfUrl)
         player.setupAudioPlayer()
         player.playTrack()
+        setTitle()
 
+    }
+    
+    func setTitle() {
+        guard let song = player.currentSong else {return}
+        let artist = song.artist
+        let name = song.name
+        var labelText = ""
+        if artist != nil {
+            labelText = artist!
+        }
+        if name != nil {
+            labelText.appendContentsOf(" - \(name!)")
+        }
+        songLabel.text = labelText
     }
     
     @IBAction func nextSong(sender: UIButton) {
         player.playNextTrack()
+        bpmLabel.text = player.currentBpm?.description
+        setTitle()
     }
     @IBAction func previousSong(sender: AnyObject) {
         player.playPrevTrack()
+        bpmLabel.text = player.currentBpm?.description
+        setTitle()
     }
     @IBAction func doSlow(sender: AnyObject) {
         currentBpmIndex -= 1
@@ -58,6 +88,7 @@ class PlayerViewController: UIViewController {
         print(currentBpmIndex)
         bpmLabel.text = allBpm[currentBpmIndex].description
         playCurrentBpm()
+        setTitle()
     }
     @IBAction func doFast(sender: AnyObject) {
         currentBpmIndex += 1
@@ -65,6 +96,7 @@ class PlayerViewController: UIViewController {
         print(currentBpmIndex)
         bpmLabel.text = allBpm[currentBpmIndex].description
         playCurrentBpm()
+        setTitle()
     }
 }
 
@@ -72,6 +104,10 @@ extension PlayerViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -82,12 +118,65 @@ extension PlayerViewController {
         } else {
             bpmLabel.text = allBpm.first?.description
         }
+        setTitle()
+        self.becomeFirstResponder()
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        //for displaying information about the song in RemoteControlCentre
+        let mpic = MPNowPlayingInfoCenter.defaultCenter()
+        if let song = player.currentSong {
+            var artist = song.artist
+            var name = song.name
+            if artist == nil {
+                artist = ""
+            }
+            if name == nil {
+                name = ""
+            }
+            mpic.nowPlayingInfo = [
+                MPMediaItemPropertyTitle: name!,
+                MPMediaItemPropertyArtist: artist!
+            ]
+        }
     }
-    
+ 
     func getAllBpm(bpmDictionary : [Int : [Int]]) {
         allBpm = bpmDictionary.keys.sort({ $0 < $1 }).flatMap({ $0 })
         print(allBpm)
     }
+    
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        let rc = event!.subtype
+        switch rc {
+        case .RemoteControlTogglePlayPause:
+            if player.isPlaying {
+                player.pauseTrack()
+            } else if player.isPoused {
+                player.playTrack()
+            } else {
+                playCurrentBpm()
+            }
+        case .RemoteControlPlay:
+            if player.isPoused {
+                player.playTrack()
+            } else {
+                playCurrentBpm()
+            }
+
+        case .RemoteControlPause:
+            player.pauseTrack()
+            
+        case .RemoteControlNextTrack:
+            player.playNextTrack()
+            bpmLabel.text = player.currentBpm?.description
+            setTitle()
+        case .RemoteControlPreviousTrack:
+            player.playPrevTrack()
+            bpmLabel.text = player.currentBpm?.description
+            setTitle()
+        default:break
+        }
+    }
+
 }
 
     /* The delegate message that will let us know that the player has finished playing an audio file

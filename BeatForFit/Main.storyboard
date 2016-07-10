@@ -71,12 +71,21 @@
                                     <navigationItem title="FitnessBeat" id="rV2-Jx-Qq2"/>
                                 </items>
                             </navigationBar>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dLF-rd-LgE">
+                                <rect key="frame" x="133" y="301" width="54" height="33.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="29"/>
+                                <state key="normal" title="🔁"/>
+                                <connections>
+                                    <action selector="repeatButton:" destination="jkj-zb-ztC" eventType="touchUpInside" id="YDn-kX-9f3"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Main" id="eDT-ct-IUh"/>
                     <connections>
                         <outlet property="bpmLabel" destination="T7v-tc-fB6" id="ebN-wm-sc3"/>
+                        <outlet property="repeatButtonOutlet" destination="dLF-rd-LgE" id="xso-9E-AV0"/>
                         <outlet property="songLabel" destination="vMX-Hn-H9P" id="AXF-bY-tPt"/>
                     </connections>
                 </viewController>

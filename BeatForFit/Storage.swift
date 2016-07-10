@@ -95,6 +95,7 @@ class Storage: NSObject {
     }
     
     func generateArrayOfURL(isPlaylist: Bool) {
+        arrayOfUrlPlaylist.removeAll()
         if isPlaylist {
             for index in playlistIndexes {
                 if let Url = songs[index].URL {arrayOfUrlPlaylist.append(Url)}

@@ -36,6 +36,9 @@ class Player : NSObject, AVAudioPlayerDelegate {
     
     // is playing or not
     var isPlaying: Bool = false
+    var isPoused = false
+    var isRepeat = true
+    
     
     // MARK: - AVAudio player delegate functions.
     
@@ -44,6 +47,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
         
         // set playing off
         self.isPlaying = false
+        playNextTrack()
         
         // invalidate scheduled timer.
         //self.timer.invalidate()
@@ -112,6 +116,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
         
         // set play status
         self.isPlaying = true
+        self.isPoused = false
         
         // set timer, so it will update played time lable every second.
         //self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(MainPlayer.updatePlayedTimeLabel), userInfo: nil, repeats: true)
@@ -135,6 +140,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
         
         // set play status
         self.isPlaying = false
+        self.isPoused = true
         
         // play currently loaded track
         self.audioPlayer.pause()
@@ -153,6 +159,10 @@ class Player : NSObject, AVAudioPlayerDelegate {
         // change track
         if self.currentTrack < self.trackCount-1 {
             self.currentTrack += 1
+        } else if isRepeat {
+            self.currentTrack = 0
+        } else {
+            return
         }
         
         
