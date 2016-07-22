@@ -104,24 +104,8 @@ extension PlayerViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-    
-    override func canBecomeFirstResponder() -> Bool {
-        return true
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        //playArray(storage.arrayOfUrlPlaylist)
-        getAllBpm(storage.bpmIndexDictionary)
-        if player.isPlaying {
-            bpmLabel.text = player.currentBpm?.description
-        } else {
-            bpmLabel.text = allBpm.first?.description
-        }
-        setTitle()
         self.becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        //for displaying information about the song in RemoteControlCentre
         let mpic = MPNowPlayingInfoCenter.defaultCenter()
         if let song = player.currentSong {
             var artist = song.artist
@@ -137,6 +121,22 @@ extension PlayerViewController {
                 MPMediaItemPropertyArtist: artist!
             ]
         }
+    }
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        //playArray(storage.arrayOfUrlPlaylist)
+        getAllBpm(storage.bpmIndexDictionary)
+        if player.isPlaying {
+            bpmLabel.text = player.currentBpm?.description
+        } else {
+            bpmLabel.text = allBpm.first?.description
+        }
+        setTitle()
+        //for displaying information about the song in RemoteControlCentre
     }
  
     func getAllBpm(bpmDictionary : [Int : [Int]]) {
