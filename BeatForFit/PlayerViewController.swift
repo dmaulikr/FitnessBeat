@@ -18,27 +18,46 @@ class PlayerViewController: UIViewController {
     let player = Player.sharedInstance
     var currentBpmIndex = 0
     var allBpm = [Int]()
+    var isShuffle = false
     
+    @IBOutlet var playButton: UIButton!
     @IBOutlet var songLabel: UILabel!
+    @IBOutlet var artistLable: UILabel!
     @IBOutlet var bpmLabel: UILabel!
     @IBOutlet var repeatButtonOutlet: UIButton!
     @IBAction func playButtonPushed(sender: UIButton) {
         if player.isPlaying {
             player.pauseTrack()
+            playButton.setImage(UIImage(named: "Play"), forState: .Normal)
         } else if player.isPoused {
             player.playTrack()
+            playButton.setImage(UIImage(named: "pause"), forState: .Normal)
         } else {
         playCurrentBpm()
+        playButton.setImage(UIImage(named: "pause"), forState: .Normal)
         }
     }
     
-    @IBAction func repeatButton(sender: AnyObject) {
+    @IBAction func repetTouched(sender: UIButton) {
         player.isRepeat = !player.isRepeat
         if player.isRepeat {
-            repeatButtonOutlet.setTitle("🔁", forState: UIControlState.Normal)
+            sender.setImage(UIImage(named: "hightRep"), forState: .Normal)
         } else {
-        repeatButtonOutlet.setTitle("↪️", forState: UIControlState.Normal)
+            sender.setImage(UIImage(named: "repeat"), forState: .Normal)
         }
+        
+    }
+    @IBAction func repeatButton(sender: AnyObject) {
+       // player.isRepeat = !player.isRepeat
+//        if player.isRepeat {
+//            repeatButtonOutlet.selected = true
+//            sender.selected = true
+//            //repeatButtonOutlet.setTitle("🔁", forState: UIControlState.Normal)
+//        } else {
+//            repeatButtonOutlet.selected = false
+//            sender.selected = false
+//        //repeatButtonOutlet.setTitle("↪️", forState: UIControlState.Normal)
+//        }
     }
     func playCurrentBpm() {
         var arrayOfUrl = [NSURL]()
@@ -55,21 +74,27 @@ class PlayerViewController: UIViewController {
         player.setupAudioPlayer()
         player.playTrack()
         setTitle()
-
     }
     
     func setTitle() {
         guard let song = player.currentSong else {return}
         let artist = song.artist
         let name = song.name
-        var labelText = ""
         if artist != nil {
-            labelText = artist!
+            artistLable.text = artist!
         }
         if name != nil {
-            labelText.appendContentsOf(" - \(name!)")
+            songLabel.text = name!
         }
-        songLabel.text = labelText
+    }
+    
+    @IBAction func suffleTouched(sender: UIButton) {
+        if isShuffle {
+            sender.setImage(UIImage(named: "hightShuffle" ), forState: .Normal)
+        } else {
+            sender.setImage(UIImage(named: "shuffle" ), forState: .Normal)
+        }
+        isShuffle = !isShuffle
     }
     
     @IBAction func nextSong(sender: UIButton) {
@@ -106,6 +131,7 @@ extension PlayerViewController {
         super.viewDidLoad()
         self.becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        repeatButtonOutlet.setImage(UIImage(named: "hightRep"), forState: .Normal)
         let mpic = MPNowPlayingInfoCenter.defaultCenter()
         if let song = player.currentSong {
             var artist = song.artist
@@ -132,8 +158,10 @@ extension PlayerViewController {
         getAllBpm(storage.bpmIndexDictionary)
         if player.isPlaying {
             bpmLabel.text = player.currentBpm?.description
+            playButton.setImage(UIImage(named: "pause"), forState: .Normal)
         } else {
             bpmLabel.text = allBpm.first?.description
+            playButton.setImage(UIImage(named: "Play"), forState: .Normal)
         }
         setTitle()
         //for displaying information about the song in RemoteControlCentre
