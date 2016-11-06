@@ -14,8 +14,8 @@ struct TempiPeak {
 }
 
 typealias TempiPeakDetectionCallback = (
-    timeStamp: Double,
-    magnitude: Float
+    _ timeStamp: Double,
+    _ magnitude: Float
     ) -> Void
 
 class TempiPeakDetector: NSObject {
@@ -26,35 +26,35 @@ class TempiPeakDetector: NSObject {
     /// The detector will coalesce peaks around this time interval, selecting the largest.
     var coalesceInterval: Double = 0.0
     
-    private var sampleInterval: Double
+    fileprivate var sampleInterval: Double
     
-    private var trailingSamples: [Float] = [Float]()
-    private var peakQueue: [TempiPeak] = [TempiPeak]()
+    fileprivate var trailingSamples: [Float] = [Float]()
+    fileprivate var peakQueue: [TempiPeak] = [TempiPeak]()
 
-    private var isOnsetting: Bool = false
+    fileprivate var isOnsetting: Bool = false
     
     // We save recentHistoryDuration worth (currently 1s) of recent magnitudes. For an incoming magnitude m
     // to be considered a peak (in addition to satisfying other requirements) it must also satisfy:
     // m > max(recentMags) * recentMaxThresholdRatio. Lower threshold ratios will result in more peaks
     // but potentially more noise. Higher ratios will result in fewer peaks and less noise but may miss valid data.
     // NB: 0.6 and 1.25 were found by trial and error to be optimal choices.
-    private var recentMaxThresholdRatio: Float = 0.6
-    private var recentHistoryDuration: Float = 1.25
+    fileprivate var recentMaxThresholdRatio: Float = 0.6
+    fileprivate var recentHistoryDuration: Float = 1.25
     
-    private var counter: Int = 0
-    private var lastMagnitude: Float = 0.0
-    private var peakDetectionCallback: TempiPeakDetectionCallback!
+    fileprivate var counter: Int = 0
+    fileprivate var lastMagnitude: Float = 0.0
+    fileprivate var peakDetectionCallback: TempiPeakDetectionCallback!
     
-    private var lastPeakTick: Int = 0
+    fileprivate var lastPeakTick: Int = 0
 
-    init(peakDetectionCallback callback: TempiPeakDetectionCallback, sampleRate: Float) {
+    init(peakDetectionCallback callback: @escaping TempiPeakDetectionCallback, sampleRate: Float) {
         self.peakDetectionCallback = callback
         self.sampleRate = sampleRate
         self.sampleInterval = 1.0 / Double(sampleRate)
     }
     
     // Add a magnitude to the analysis window and return whether it resulted in a peak or not.
-    func addMagnitude(timeStamp timeStamp: Double, magnitude: Float) {
+    func addMagnitude(timeStamp: Double, magnitude: Float) {
         var recentMax: Float = 0.0
         
         // Make our reference for the overall max go back 1 second
@@ -92,20 +92,20 @@ class TempiPeakDetector: NSObject {
         self.evaluatePeakQueue(timeStamp)
     }
     
-    private func handlePeak(timeStamp timeStamp: Double, magnitude: Float, longWindowThreshold: Float) {
+    fileprivate func handlePeak(timeStamp: Double, magnitude: Float, longWindowThreshold: Float) {
         self.isOnsetting = false
         
         // We might have a peak, but only if the incoming magnitude > some fraction of the loudest recent (1s) mag
         if magnitude >= longWindowThreshold {
             if (self.coalesceInterval == 0.0) {
-                self.peakDetectionCallback(timeStamp: timeStamp, magnitude: magnitude)
+                self.peakDetectionCallback(timeStamp, magnitude)
             } else {
                 peakQueue.append(TempiPeak(timeStamp: timeStamp, magnitude: magnitude))
             }
         }
     }
     
-    private func evaluatePeakQueue(timeStamp: Double) {
+    fileprivate func evaluatePeakQueue(_ timeStamp: Double) {
         if (self.coalesceInterval == 0.0) {
             return
         }
@@ -125,7 +125,7 @@ class TempiPeakDetector: NSObject {
             }
 
             self.peakQueue.removeAll()
-            self.peakDetectionCallback(timeStamp: max.timeStamp, magnitude: max.magnitude)
+            self.peakDetectionCallback(max.timeStamp, max.magnitude)
         }
     }
     

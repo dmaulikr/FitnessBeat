@@ -15,11 +15,11 @@ class CellForLibrary: UITableViewCell {
     @IBOutlet var albumImage: UIImageView?
     @IBOutlet var tempo: UILabel?
     
-    func set(song: Song) {
+    func set(_ song: Song) {
         title?.text = song.name
         var subtitle = ""
         if song.artist != nil { subtitle = song.artist! }
-        if song.album != nil { subtitle.appendContentsOf(" - \(song.album!)") }
+        if song.album != nil { subtitle.append(" - \(song.album!)") }
         artist?.text = subtitle
         albumImage?.image = song.image
         if song.bpm != nil {

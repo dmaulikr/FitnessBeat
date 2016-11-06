@@ -8,12 +8,25 @@
 
 import Foundation
 import MediaPlayer
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 class Storage: NSObject {
     
     //SINGLETON Contains all data
     static let sharedInstance = Storage()
-    let defaults = NSUserDefaults.standardUserDefaults()
+    let defaults = UserDefaults.standard
     
     //var allSongs = [Float : [Song]]() //all songs with bpm, existing only during execution
     //var songs = [Float : [Song]]()
@@ -26,7 +39,7 @@ class Storage: NSObject {
     var bpmIndexDictionary  = [Int : [Int]]()
     var songs = [Song]()
     var persistanceidIndex = [String : Int]()
-    var arrayOfUrlPlaylist = [NSURL]()
+    var arrayOfUrlPlaylist = [URL]()
     
     var storedSongs = [String : Int]()
     
@@ -36,13 +49,13 @@ class Storage: NSObject {
     let defaultBpmIndex = "BpmIndex1"
     
     //set up and load
-    private override init() {
+    fileprivate override init() {
         super.init()
         
         //bpmIndexDictionary = defaults.objectForKey(defaultBpmIndex) as? [Int : [Int]] ?? [Int : [Int]]()
-        playlistIndexes = defaults.arrayForKey(defaultPlaylist) as? [Int] ?? [Int]()
-        storedSongs = defaults.objectForKey(defaultAllSongs) as? [String: Int] ?? [String: Int]()
-        persistanceidIndex = defaults.objectForKey(defaultIndex) as? [String : Int] ?? [String : Int]()
+        playlistIndexes = defaults.array(forKey: defaultPlaylist) as? [Int] ?? [Int]()
+        storedSongs = defaults.object(forKey: defaultAllSongs) as? [String: Int] ?? [String: Int]()
+        persistanceidIndex = defaults.object(forKey: defaultIndex) as? [String : Int] ?? [String : Int]()
         
         if storedSongs.count > 0 {
             songs = findSongWithPersistentIdString1(storedSongs)
@@ -53,52 +66,52 @@ class Storage: NSObject {
     //save all data to USERDEFAULTS
     func saveALL() {
         storedSongs = copySongsInDictionary(songs)
-        defaults.setObject(storedSongs, forKey: defaultAllSongs)
-        defaults.setObject(playlistIndexes, forKey: defaultPlaylist)
-        defaults.setObject(persistanceidIndex, forKey: defaultIndex)
+        defaults.set(storedSongs, forKey: defaultAllSongs)
+        defaults.set(playlistIndexes, forKey: defaultPlaylist)
+        defaults.set(persistanceidIndex, forKey: defaultIndex)
     }
     
-    func delSong(index: Int) {
-        if let id = songs[index].id { persistanceidIndex.removeValueForKey(id)}
+    func delSong(_ index: Int) {
+        if let id = songs[index].id { persistanceidIndex.removeValue(forKey: id)}
         if let bpm = songs[index].bpm {
             if var arrOfIndexWithBpm = bpmIndexDictionary[bpm] {
-                if let indexBpm = arrOfIndexWithBpm.indexOf(index) {
-                    arrOfIndexWithBpm.removeAtIndex(indexBpm)
+                if let indexBpm = arrOfIndexWithBpm.index(of: index) {
+                    arrOfIndexWithBpm.remove(at: indexBpm)
                     bpmIndexDictionary[bpm] = arrOfIndexWithBpm
                 }
             }
 
         }
-        songs.removeAtIndex(index)
-        if let indexInPlaylist =  playlistIndexes.indexOf(index) {
-           playlistIndexes.removeAtIndex(indexInPlaylist)
+        songs.remove(at: index)
+        if let indexInPlaylist =  playlistIndexes.index(of: index) {
+           playlistIndexes.remove(at: indexInPlaylist)
         }
 
     }
     
     //convert saved in UserDefaults dictionaries to array of Songs TO DELETE
-    func findSongWithPersistentIdString1(persistentIDString: [String : Int]) -> [Song] {
+    func findSongWithPersistentIdString1(_ persistentIDString: [String : Int]) -> [Song] {
         var arrayOfSongs = [Song]()
         for songs in persistentIDString{
             let predicate = MPMediaPropertyPredicate(value: songs.0, forProperty: MPMediaItemPropertyPersistentID)
             let songQuery = MPMediaQuery()
             songQuery.addFilterPredicate(predicate)
-            if let items = songQuery.items where items.count > 0 {
+            if let items = songQuery.items, items.count > 0 {
                 arrayOfSongs.append(Song(item: items[0], bpm: songs.1, index: persistanceidIndex[songs.0]))
             }
         }
         //sort by index
-        arrayOfSongs.sortInPlace {(song1: Song, song2: Song) -> Bool in
+        arrayOfSongs.sort {(song1: Song, song2: Song) -> Bool in
             song1.index < song2.index
         }
         return arrayOfSongs
     }
     
-    func generateArrayOfURL(isPlaylist: Bool) {
+    func generateArrayOfURL(_ isPlaylist: Bool) {
         arrayOfUrlPlaylist.removeAll()
         if isPlaylist {
             for index in playlistIndexes {
-                if let Url = songs[index].URL {arrayOfUrlPlaylist.append(Url)}
+                if let Url = songs[index].URL {arrayOfUrlPlaylist.append(Url as URL)}
             }
         }
         print(arrayOfUrlPlaylist)
@@ -118,7 +131,7 @@ class Storage: NSObject {
         }
     }
     
-    func getSongFromUrl(url: NSURL) -> Song? {
+    func getSongFromUrl(_ url: URL) -> Song? {
 //        let predicate = MPMediaPropertyPredicate(value: url, forProperty: MPMediaItemPropertyAssetURL )
 //        let songQuery = MPMediaQuery()
 //        songQuery.addFilterPredicate(predicate)
@@ -158,7 +171,7 @@ class Storage: NSObject {
     */
     
     //save array of Song to dictionary for storing in UserDefaults
-    func copySongsInDictionary(arrayOfSongs: [Song]) -> [String : Int] {
+    func copySongsInDictionary(_ arrayOfSongs: [Song]) -> [String : Int] {
         var dicOfSongs = [String : Int]()
         for song in arrayOfSongs {
             guard let songID = song.id else {

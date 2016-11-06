@@ -12,8 +12,8 @@ import MediaPlayer
 class LibraryViewController : UIViewController {
     
     //general
-    private let semaphore = Semaphore(value: 0)
-    private let defaults = NSUserDefaults.standardUserDefaults()
+    fileprivate let semaphore = Semaphore(value: 0)
+    fileprivate let defaults = UserDefaults.standard
 
     //progress bar
     @IBOutlet var progress: UIProgressView!
@@ -48,16 +48,16 @@ extension LibraryViewController {
         progressBar = ProgressBar(progress: progress)
         songPicker = SongPicker(progressBar: progressBar!, sender: self)
         //Set up table
-        table.registerClass(CellForLibrary.self, forCellReuseIdentifier: cellTableIdentifier)
+        table.register(CellForLibrary.self, forCellReuseIdentifier: cellTableIdentifier)
         let nib = UINib(nibName: "CellForLibraryTable", bundle: nil)
-        table.registerNib(nib,forCellReuseIdentifier: cellTableIdentifier)
+        table.register(nib,forCellReuseIdentifier: cellTableIdentifier)
         table.allowsSelection = true
         table.allowsMultipleSelection = true
         table.dataSource = dataSource
         table.delegate = tableDelegate
         table.reloadData()
         //reload data when notificate
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LibraryViewController.loadList(_:)),name:"load", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LibraryViewController.loadList(_:)),name:NSNotification.Name(rawValue: "load"), object: nil)
         }
     
     override func didReceiveMemoryWarning() {
@@ -66,26 +66,34 @@ extension LibraryViewController {
     }
     
     //save songs for playlist before changing view
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         if table.indexPathsForSelectedRows != nil {
             for row in table.indexPathsForSelectedRows! {
-                self.table.deselectRowAtIndexPath(row, animated: false)
+                self.table.deselectRow(at: row, animated: false)
             }
         }
     }
     
     //media picker
-    @IBAction func presentPicker (sender:AnyObject) {
-        let picker = MPMediaPickerController(mediaTypes:.Music)
+    @IBAction func presentPicker (_ sender:AnyObject) {
+        let picker = MPMediaPickerController(mediaTypes:.music)
         picker.delegate = songPicker
         picker.allowsPickingMultipleItems = true
-        self.presentViewController(picker, animated: true, completion: nil)
+        self.present(picker, animated: true, completion: nil)
     }
     
-    func loadList(notification: NSNotification){
+    func loadList(_ notification: Notification){
         //load data here
         self.table.reloadData()
     }
+    
+    func showAnalyzeAlert() {
+        let alert = UIAlertController(title: "Keep calm", message: "We are analyzing your songs. It will take awhile", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
     
 }
 

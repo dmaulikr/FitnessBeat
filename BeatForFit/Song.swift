@@ -11,7 +11,7 @@ import MediaPlayer
 
 class Song: NSObject {
     
-    let URL : NSURL?
+    let URL : Foundation.URL?
     let id : String?
     var bpm : Int?
     let name : String?
@@ -26,7 +26,7 @@ class Song: NSObject {
         id = item.persistentID.description
         self.bpm = bpm
         name = item.title
-        image = item.artwork?.imageWithSize(CGSize(width: 39, height: 39))
+        image = item.artwork?.image(at: CGSize(width: 39, height: 39))
         artist = item.artist
         album = item.albumTitle
         self.index = index

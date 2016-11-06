@@ -17,9 +17,9 @@ class TableWithSongs: NSObject {
 extension TableWithSongs : UITableViewDelegate {
     
     //remove song from playlist when deselecting 
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if let indexInPlaylist = storage.playlistIndexes.indexOf(indexPath.row) {
-            storage.playlistIndexes.removeAtIndex(indexInPlaylist)
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if let indexInPlaylist = storage.playlistIndexes.index(of: indexPath.row) {
+            storage.playlistIndexes.remove(at: indexInPlaylist)
         }
         /*
         if let indexOfSong = storage.playlistSongs.indexOf(storage.allSongs[indexPath.row]) {
@@ -30,7 +30,7 @@ extension TableWithSongs : UITableViewDelegate {
     
         
     //add selected songs in playlist dictionary
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //storage.playlistSongs.append(storage.allSongs[indexPath.row])
         storage.playlistIndexes.append(indexPath.row)
     }

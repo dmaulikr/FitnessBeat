@@ -20,34 +20,35 @@ class PlayerViewController: UIViewController {
     var allBpm = [Int]()
     var isShuffle = false
     
+    @IBOutlet var navBar: UINavigationBar!
     @IBOutlet var playButton: UIButton!
     @IBOutlet var songLabel: UILabel!
     @IBOutlet var artistLable: UILabel!
     @IBOutlet var bpmLabel: UILabel!
     @IBOutlet var repeatButtonOutlet: UIButton!
-    @IBAction func playButtonPushed(sender: UIButton) {
+    @IBAction func playButtonPushed(_ sender: UIButton) {
         if player.isPlaying {
             player.pauseTrack()
-            playButton.setImage(UIImage(named: "Play"), forState: .Normal)
+            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
         } else if player.isPoused {
             player.playTrack()
-            playButton.setImage(UIImage(named: "pause"), forState: .Normal)
+            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
+        playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         playCurrentBpm()
-        playButton.setImage(UIImage(named: "pause"), forState: .Normal)
         }
     }
     
-    @IBAction func repetTouched(sender: UIButton) {
+    @IBAction func repetTouched(_ sender: UIButton) {
         player.isRepeat = !player.isRepeat
         if player.isRepeat {
-            sender.setImage(UIImage(named: "hightRep"), forState: .Normal)
+            sender.setImage(UIImage(named: "hightRep"), for: UIControlState())
         } else {
-            sender.setImage(UIImage(named: "repeat"), forState: .Normal)
+            sender.setImage(UIImage(named: "repeat"), for: UIControlState())
         }
         
     }
-    @IBAction func repeatButton(sender: AnyObject) {
+    @IBAction func repeatButton(_ sender: AnyObject) {
        // player.isRepeat = !player.isRepeat
 //        if player.isRepeat {
 //            repeatButtonOutlet.selected = true
@@ -60,20 +61,26 @@ class PlayerViewController: UIViewController {
 //        }
     }
     func playCurrentBpm() {
-        var arrayOfUrl = [NSURL]()
-        if let bpm = Int(bpmLabel.text!) {
-            if let arrayOfIndexes = storage.bpmIndexDictionary[bpm] {
-                for index in arrayOfIndexes {
-                    if let url = storage.songs[index].URL {
-                        arrayOfUrl.append(url)
+        var arrayOfUrl = [URL]()
+        if let bpmText = bpmLabel.text {
+            if let currentBpm = Int(bpmText) {
+                if let arrayOfIndexes = storage.bpmIndexDictionary[currentBpm] {
+                    for index in arrayOfIndexes {
+                        if let url = storage.songs[index].URL {
+                            arrayOfUrl.append(url as URL)
+                        }
                     }
                 }
+                player.setupPlayList(arrayOfUrl)
+                player.setupAudioPlayer()
+                player.playTrack()
+                setTitle()
+            } else {
+                showNoSongAlert()
             }
+        } else {
+            showNoSongAlert()
         }
-        player.setupPlayList(arrayOfUrl)
-        player.setupAudioPlayer()
-        player.playTrack()
-        setTitle()
     }
     
     func setTitle() {
@@ -88,26 +95,26 @@ class PlayerViewController: UIViewController {
         }
     }
     
-    @IBAction func suffleTouched(sender: UIButton) {
+    @IBAction func suffleTouched(_ sender: UIButton) {
         if isShuffle {
-            sender.setImage(UIImage(named: "hightShuffle" ), forState: .Normal)
+            sender.setImage(UIImage(named: "hightShuffle" ), for: UIControlState())
         } else {
-            sender.setImage(UIImage(named: "shuffle" ), forState: .Normal)
+            sender.setImage(UIImage(named: "shuffle" ), for: UIControlState())
         }
         isShuffle = !isShuffle
     }
     
-    @IBAction func nextSong(sender: UIButton) {
+    @IBAction func nextSong(_ sender: UIButton) {
         player.playNextTrack()
         bpmLabel.text = player.currentBpm?.description
         setTitle()
     }
-    @IBAction func previousSong(sender: AnyObject) {
+    @IBAction func previousSong(_ sender: AnyObject) {
         player.playPrevTrack()
         bpmLabel.text = player.currentBpm?.description
         setTitle()
     }
-    @IBAction func doSlow(sender: AnyObject) {
+    @IBAction func doSlow(_ sender: AnyObject) {
         currentBpmIndex -= 1
         guard currentBpmIndex >= 0 else {currentBpmIndex = 0; return}
         print(currentBpmIndex)
@@ -115,13 +122,20 @@ class PlayerViewController: UIViewController {
         playCurrentBpm()
         setTitle()
     }
-    @IBAction func doFast(sender: AnyObject) {
+    @IBAction func doFast(_ sender: AnyObject) {
         currentBpmIndex += 1
         guard currentBpmIndex < allBpm.count else {currentBpmIndex = allBpm.count - 1; return}
         print(currentBpmIndex)
         bpmLabel.text = allBpm[currentBpmIndex].description
         playCurrentBpm()
         setTitle()
+    }
+    
+    func showNoSongAlert() {
+        let alert = UIAlertController(title: "No songs", message: "Add some songs to the application library", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        playButton.setImage(UIImage(named: "Play"), for: UIControlState())
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -130,9 +144,9 @@ extension PlayerViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.becomeFirstResponder()
-        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        repeatButtonOutlet.setImage(UIImage(named: "hightRep"), forState: .Normal)
-        let mpic = MPNowPlayingInfoCenter.defaultCenter()
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        repeatButtonOutlet.setImage(UIImage(named: "hightRep"), for: UIControlState())
+        let mpic = MPNowPlayingInfoCenter.default()
         if let song = player.currentSong {
             var artist = song.artist
             var name = song.name
@@ -147,35 +161,39 @@ extension PlayerViewController {
                 MPMediaItemPropertyArtist: artist!
             ]
         }
-    }
+        navigationController?.navigationBar.setBackgroundImage(UIImage(named: "bar"), for: .default)    }
     
-    override func canBecomeFirstResponder() -> Bool {
+    override var canBecomeFirstResponder : Bool {
         return true
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         //playArray(storage.arrayOfUrlPlaylist)
         getAllBpm(storage.bpmIndexDictionary)
         if player.isPlaying {
             bpmLabel.text = player.currentBpm?.description
-            playButton.setImage(UIImage(named: "pause"), forState: .Normal)
-        } else {
+            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
+        } else if player.isPoused {
+            bpmLabel.text = player.currentBpm?.description
+            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
+        }
+        else {
             bpmLabel.text = allBpm.first?.description
-            playButton.setImage(UIImage(named: "Play"), forState: .Normal)
+            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
         }
         setTitle()
         //for displaying information about the song in RemoteControlCentre
     }
  
-    func getAllBpm(bpmDictionary : [Int : [Int]]) {
-        allBpm = bpmDictionary.keys.sort({ $0 < $1 }).flatMap({ $0 })
+    func getAllBpm(_ bpmDictionary : [Int : [Int]]) {
+        allBpm = bpmDictionary.keys.sorted(by: { $0 < $1 }).flatMap({ $0 })
         print(allBpm)
     }
     
-    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+    override func remoteControlReceived(with event: UIEvent?) {
         let rc = event!.subtype
         switch rc {
-        case .RemoteControlTogglePlayPause:
+        case .remoteControlTogglePlayPause:
             if player.isPlaying {
                 player.pauseTrack()
             } else if player.isPoused {
@@ -183,21 +201,21 @@ extension PlayerViewController {
             } else {
                 playCurrentBpm()
             }
-        case .RemoteControlPlay:
+        case .remoteControlPlay:
             if player.isPoused {
                 player.playTrack()
             } else {
                 playCurrentBpm()
             }
 
-        case .RemoteControlPause:
+        case .remoteControlPause:
             player.pauseTrack()
             
-        case .RemoteControlNextTrack:
+        case .remoteControlNextTrack:
             player.playNextTrack()
             bpmLabel.text = player.currentBpm?.description
             setTitle()
-        case .RemoteControlPreviousTrack:
+        case .remoteControlPreviousTrack:
             player.playPrevTrack()
             bpmLabel.text = player.currentBpm?.description
             setTitle()

@@ -17,9 +17,9 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     
     override func viewDidLoad() {
         //SetUp Table
-        table.registerClass(CellForLibrary.self, forCellReuseIdentifier: cellTableIdentifier)
+        table.register(CellForLibrary.self, forCellReuseIdentifier: cellTableIdentifier)
         let nib = UINib(nibName: "CellForLibraryTable", bundle: nil)
-        table.registerNib(nib,forCellReuseIdentifier: cellTableIdentifier)
+        table.register(nib,forCellReuseIdentifier: cellTableIdentifier)
         table.allowsSelection = false
     }
     
@@ -27,7 +27,7 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         table.reloadData()
     }
     
@@ -36,13 +36,13 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     let cellTableIdentifier = "CellForLibrary"
     var nubOfRows = 0
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return storage.playlistIndexes.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! CellForLibrary
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellTableIdentifier, for: indexPath) as! CellForLibrary
        // let song = storage.playlistSongs[indexPath.row]
         let song = storage.songs[storage.playlistIndexes[indexPath.row]]
         cell.set(song)
@@ -50,22 +50,22 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     //turn on deletion
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
     //deletion songs from playlist
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if (editingStyle == UITableViewCellEditingStyle.Delete) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
             // handle delete
-            storage.playlistIndexes.removeAtIndex(indexPath.row)
+            storage.playlistIndexes.remove(at: indexPath.row)
             table.reloadData()
         }
     }
     
     
     //play song
-    @IBAction func playPlaylist(sender: AnyObject) {
+    @IBAction func playPlaylist(_ sender: AnyObject) {
         guard storage.playlistIndexes.count != 0 else {return}
         storage.generateArrayOfURL(true)
         player.setupPlayList(storage.arrayOfUrlPlaylist)
@@ -78,7 +78,7 @@ class PlaylistViewController: UIViewController, UITableViewDataSource, UITableVi
         
     
     //Clean playlist
-    @IBAction func cleanPlaylist(sender: AnyObject) {
+    @IBAction func cleanPlaylist(_ sender: AnyObject) {
         storage.playlistIndexes.removeAll()
         storage.arrayOfUrlPlaylist.removeAll()
         table.reloadData()

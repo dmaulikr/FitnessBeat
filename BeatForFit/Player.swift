@@ -13,7 +13,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
     
     static let sharedInstance = Player()
     
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     // audio player object
@@ -24,7 +24,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
     
     
     // play list file
-    var playListURL = [NSURL]()
+    var playListURL = [URL]()
     
     // total number of track
     var trackCount: Int = 0
@@ -43,7 +43,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
     // MARK: - AVAudio player delegate functions.
     
     // set status false and set button  when audio finished.
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         
         // set playing off
         self.isPlaying = false
@@ -56,7 +56,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
     }
     
     // show message if error occured while decoding the audio
-    func audioPlayerDecodeErrorDidOccur(player: AVAudioPlayer, error: NSError?) {
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         // print friendly error message
         print(error!.localizedDescription)
     }
@@ -66,7 +66,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
     // MARK: - Utility functions
     
     // setup playList
-    func setupPlayList(arrayOfUrls: [NSURL]) {
+    func setupPlayList(_ arrayOfUrls: [URL]) {
         
         // audio resource file list
         //self.playListFiles = ["forest-bright-01","jungle-01","swamp-01","forest-bright-01","jungle-01"]
@@ -94,7 +94,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
         
         do {
             // create audio player with given file url
-            self.audioPlayer = try AVAudioPlayer(contentsOfURL: playListURL[currentTrack])
+            self.audioPlayer = try AVAudioPlayer(contentsOf: playListURL[currentTrack])
             
             // set audio player delegate
             self.audioPlayer.delegate = self
@@ -167,7 +167,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
         
         
         // stop player if currently playing
-        if self.audioPlayer.playing {
+        if self.audioPlayer.isPlaying {
             self.audioPlayer.stop()
         }
         
@@ -191,7 +191,7 @@ class Player : NSObject, AVAudioPlayerDelegate {
         }
         
         // stop player if currently playing
-        if self.audioPlayer.playing {
+        if self.audioPlayer.isPlaying {
             self.audioPlayer.stop()
         }
         

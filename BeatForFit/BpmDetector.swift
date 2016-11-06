@@ -11,12 +11,12 @@ import Foundation
 class BpmDetector: NSObject {
     
     //detecting bpm
-    private let beatDetector: TempiBeatDetector = TempiBeatDetector()
+    fileprivate let beatDetector: TempiBeatDetector = TempiBeatDetector()
     let semaphore = Semaphore(value: 0)
     let storage = Storage.sharedInstance
     
     //detecting can not be parallel
-    func detect(inSong: Song) {
+    func detect(_ inSong: Song) {
         
         beatDetector.fileAnalysisCompletionHandler =
             {(
@@ -31,13 +31,13 @@ class BpmDetector: NSObject {
     }
     
     //set bpm when finished detecting
-    func setBpm(bpm: Float, song: Song) {
+    func setBpm(_ bpm: Float, song: Song) {
         song.bpm = Int(bpm)
         semaphore.signal()
     }
     
     //it's executing in background and showing progress bar
-    func analize(progressBar: ProgressBar) {
+    func analize(_ progressBar: ProgressBar) {
         for song in storage.songs {
             if song.bpm == nil {
                 detect(song)

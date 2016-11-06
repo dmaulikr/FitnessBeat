@@ -14,7 +14,7 @@ class SongPicker : NSObject {
     let storage = Storage.sharedInstance //storage
     let progressBar : ProgressBar //progress of analizing songs
     let sender : UIViewController //view that contain progress bar
-    private let detector : BpmDetector //detecting bpm
+    fileprivate let detector : BpmDetector //detecting bpm
     
     init(progressBar : ProgressBar, sender : UIViewController) {
         self.progressBar = progressBar
@@ -27,19 +27,20 @@ class SongPicker : NSObject {
 extension SongPicker : MPMediaPickerControllerDelegate {
     
     //show media picker and set all picked songs
-    func mediaPicker(mediaPicker: MPMediaPickerController,didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
-        sender.dismissViewControllerAnimated(true, completion: {
+    func mediaPicker(_ mediaPicker: MPMediaPickerController,didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
+        sender.dismiss(animated: true, completion: {
             self.setCollectinOfSongs(mediaItemCollection)
+            self.showAnalyzeAlert()
         })
     }
     
     //if no songs were choosen
-    func mediaPickerDidCancel(mediaPicker: MPMediaPickerController) {
-        sender.dismissViewControllerAnimated(true, completion: nil)
+    func mediaPickerDidCancel(_ mediaPicker: MPMediaPickerController) {
+        sender.dismiss(animated: true, completion: nil)
     }
     
     //add songs in collection that user choose in media picker
-    func setCollectinOfSongs (mediaItemCollection: MPMediaItemCollection) {
+    func setCollectinOfSongs (_ mediaItemCollection: MPMediaItemCollection) {
         for songs in mediaItemCollection.items {
             //check is that song already in collection
             guard (storage.storedSongs[songs.persistentID.description] == nil ) else {continue}
@@ -51,10 +52,17 @@ extension SongPicker : MPMediaPickerControllerDelegate {
             progressBar.amountOFAnalizingSongs += 1
         }
         //analize(BPM) in background
-        NSNotificationCenter.defaultCenter().postNotificationName("load", object: nil)
-        dispatch_async(dispatch_get_global_queue(0, 0)) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "load"), object: nil)
+        DispatchQueue.global(qos: .utility).async {
             self.detector.analize(self.progressBar)
         }
     }
+    
+    func showAnalyzeAlert() {
+        let alert = UIAlertController(title: "Keep calm", message: "We are analyzing your songs. It will take some time", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        sender.present(alert, animated: true, completion: nil)
+    }
+
 
 }

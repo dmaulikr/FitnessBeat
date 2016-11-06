@@ -16,7 +16,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     var audioPlayer = AVAudioPlayer()
     
     // timer (used to show current track play time)
-    var timer:NSTimer!
+    var timer:Timer!
     
     
     // play list file and title list
@@ -47,25 +47,25 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     
     // outlet & action - prev button
     @IBOutlet var prevButton: UIBarButtonItem!
-    @IBAction func prevButtonAction(sender: UIBarButtonItem) {
+    @IBAction func prevButtonAction(_ sender: UIBarButtonItem) {
         self.playPrevTrack()
     }
     
     // outlet & action - play button
     @IBOutlet var playButton: UIBarButtonItem!
-    @IBAction func playButtonAction(sender: UIBarButtonItem) {
+    @IBAction func playButtonAction(_ sender: UIBarButtonItem) {
         self.playTrack()
     }
     
     // outlet & action - pause button
     @IBOutlet var pauseButton: UIBarButtonItem!
-    @IBAction func pauseButtonAction(sender: UIBarButtonItem) {
+    @IBAction func pauseButtonAction(_ sender: UIBarButtonItem) {
         self.pauseTrack()
     }
     
     // outlet & action - forward button
     @IBOutlet var nextButton: UIBarButtonItem!
-    @IBAction func nextButtonAction(sender: UIBarButtonItem) {
+    @IBAction func nextButtonAction(_ sender: UIBarButtonItem) {
         self.playNextTrack()
     }
     
@@ -101,7 +101,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     // MARK: - AVAudio player delegate functions.
     
     // set status false and set button  when audio finished.
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         
         // set playing off
         self.isPlaying = false
@@ -113,7 +113,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     }
     
     // show message if error occured while decoding the audio
-    func audioPlayerDecodeErrorDidOccur(player: AVAudioPlayer, error: NSError?) {
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         // print friendly error message
         print(error!.localizedDescription)
     }
@@ -123,7 +123,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     // MARK: - Utility functions
     
     // setup playList
-    private func setupPlayList() {
+    fileprivate func setupPlayList() {
         
         // audio resource file list
         self.playListFiles = ["forest-bright-01","jungle-01","swamp-01","forest-bright-01","jungle-01"]
@@ -143,14 +143,14 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     
     
     // setup audio player
-    private func setupAudioPlayer() {
+    fileprivate func setupAudioPlayer() {
         
         // choose file from play list
-        let fileURL:NSURL =  NSBundle.mainBundle().URLForResource(self.playListFiles[self.currentTrack-1], withExtension: "mp3")!
+        let fileURL:URL =  Bundle.main.url(forResource: self.playListFiles[self.currentTrack-1], withExtension: "mp3")!
         
         do {
             // create audio player with given file url
-            self.audioPlayer = try AVAudioPlayer(contentsOfURL: fileURL)
+            self.audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
             
             // set audio player delegate
             self.audioPlayer.delegate = self
@@ -169,7 +169,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     }
     
     // play current track
-    private func playTrack() {
+    fileprivate func playTrack() {
         
         // set play status
         self.isPlaying = true
@@ -185,7 +185,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     }
     
     // pause current track
-    private func pauseTrack() {
+    fileprivate func pauseTrack() {
         
         // invalidate scheduled timer.
         self.timer.invalidate()
@@ -201,7 +201,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     
     
     // play next track
-    private func playNextTrack() {
+    fileprivate func playNextTrack() {
         
         // pause current track
         self.pauseTrack()
@@ -212,7 +212,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
         }
         
         // stop player if currently playing
-        if self.audioPlayer.playing {
+        if self.audioPlayer.isPlaying {
             self.audioPlayer.stop()
         }
         
@@ -225,7 +225,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     
     
     // play prev track
-    private func playPrevTrack() {
+    fileprivate func playPrevTrack() {
         
         // pause current track
         self.pauseTrack()
@@ -236,7 +236,7 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
         }
         
         // stop player if currently playing
-        if self.audioPlayer.playing {
+        if self.audioPlayer.isPlaying {
             self.audioPlayer.stop()
         }
         
@@ -249,31 +249,31 @@ class MainPlayer : UIViewController, AVAudioPlayerDelegate {
     
     
     // enable / disable player button based on track
-    private func setButtonStatus() {
+    fileprivate func setButtonStatus() {
         
         // set play/pause button based on playing status
         if isPlaying {
-            self.playButton.enabled = false
-            self.pauseButton.enabled = true
+            self.playButton.isEnabled = false
+            self.pauseButton.isEnabled = true
         }else {
-            self.playButton.enabled = true
-            self.pauseButton.enabled = false
+            self.playButton.isEnabled = true
+            self.pauseButton.isEnabled = false
         }
         
         // set prev/next button based on current track
         if self.currentTrack == 1  {
-            self.prevButton.enabled = false
+            self.prevButton.isEnabled = false
             if self.trackCount > 1 {
-                self.nextButton.enabled = true
+                self.nextButton.isEnabled = true
             }else{
-                self.nextButton.enabled = false
+                self.nextButton.isEnabled = false
             }
         }else if self.currentTrack == self.trackCount {
-            self.prevButton.enabled = true
-            self.nextButton.enabled = false
+            self.prevButton.isEnabled = true
+            self.nextButton.isEnabled = false
         }else {
-            self.prevButton.enabled = true
-            self.nextButton.enabled = true
+            self.prevButton.isEnabled = true
+            self.nextButton.isEnabled = true
         }
         
         // set track info
@@ -300,7 +300,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     
     static let sharedInstance = Player1()
     
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     
@@ -309,13 +309,13 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     var audioPlayer = AVAudioPlayer()
     
     // timer (used to show current track play time)
-    var timer:NSTimer!
+    var timer:Timer!
     
     
     // play list file and title list
    // var playListFiles = [String]()
    // var playListTitles = [String]()
-    var playListURL = [NSURL]()
+    var playListURL = [URL]()
     
     // total number of track
     var trackCount: Int = 0
@@ -329,7 +329,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     // MARK: - AVAudio player delegate functions.
     
     // set status false and set button  when audio finished.
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         
         // set playing off
         self.isPlaying = false
@@ -341,7 +341,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     }
     
     // show message if error occured while decoding the audio
-    func audioPlayerDecodeErrorDidOccur(player: AVAudioPlayer, error: NSError?) {
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         // print friendly error message
         print(error!.localizedDescription)
     }
@@ -351,7 +351,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     // MARK: - Utility functions
     
     // setup playList
-    private func setupPlayList(arrayOfUrls: [NSURL]) {
+    fileprivate func setupPlayList(_ arrayOfUrls: [URL]) {
         
         // audio resource file list
         //self.playListFiles = ["forest-bright-01","jungle-01","swamp-01","forest-bright-01","jungle-01"]
@@ -372,14 +372,14 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     
     
     // setup audio player
-    private func setupAudioPlayer() {
+    fileprivate func setupAudioPlayer() {
         
         // choose file from play list
         //let fileURL:NSURL =  NSBundle.mainBundle().URLForResource(self.playListFiles[self.currentTrack-1], withExtension: "mp3")!
         
         do {
             // create audio player with given file url
-            self.audioPlayer = try AVAudioPlayer(contentsOfURL: playListURL[currentTrack])
+            self.audioPlayer = try AVAudioPlayer(contentsOf: playListURL[currentTrack])
             
             // set audio player delegate
             self.audioPlayer.delegate = self
@@ -398,13 +398,13 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     }
     
     // play current track
-    private func playTrack() {
+    fileprivate func playTrack() {
         
         // set play status
         self.isPlaying = true
         
         // set timer, so it will update played time lable every second.
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(MainPlayer.updatePlayedTimeLabel), userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(MainPlayer.updatePlayedTimeLabel), userInfo: nil, repeats: true)
         
         // play currently loaded track
         self.audioPlayer.play()
@@ -415,7 +415,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     }
     
     // pause current track
-    private func pauseTrack() {
+    fileprivate func pauseTrack() {
         
         // invalidate scheduled timer.
         self.timer.invalidate()
@@ -432,7 +432,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     
     
     // play next track
-    private func playNextTrack() {
+    fileprivate func playNextTrack() {
         
         // pause current track
         self.pauseTrack()
@@ -443,7 +443,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
         }
         
         // stop player if currently playing
-        if self.audioPlayer.playing {
+        if self.audioPlayer.isPlaying {
             self.audioPlayer.stop()
         }
         
@@ -456,7 +456,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
     
     
     // play prev track
-    private func playPrevTrack() {
+    fileprivate func playPrevTrack() {
         
         // pause current track
         self.pauseTrack()
@@ -467,7 +467,7 @@ class Player1 : NSObject, AVAudioPlayerDelegate {
         }
         
         // stop player if currently playing
-        if self.audioPlayer.playing {
+        if self.audioPlayer.isPlaying {
             self.audioPlayer.stop()
         }
         
