@@ -29,18 +29,19 @@ extension SongPicker : MPMediaPickerControllerDelegate {
     //show media picker and set all picked songs
     func mediaPicker(_ mediaPicker: MPMediaPickerController,didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
         sender.dismiss(animated: true, completion: {
-            self.setCollectinOfSongs(mediaItemCollection)
+            self.setCollectionOfSongs(mediaItemCollection)
+            //Show alert when close picker
             self.showAnalyzeAlert()
         })
     }
     
-    //if no songs were choosen
+    //if no songs were chosen
     func mediaPickerDidCancel(_ mediaPicker: MPMediaPickerController) {
         sender.dismiss(animated: true, completion: nil)
     }
     
     //add songs in collection that user choose in media picker
-    func setCollectinOfSongs (_ mediaItemCollection: MPMediaItemCollection) {
+    func setCollectionOfSongs (_ mediaItemCollection: MPMediaItemCollection) {
         for songs in mediaItemCollection.items {
             //check is that song already in collection
             guard (storage.storedSongs[songs.persistentID.description] == nil ) else {continue}
@@ -51,15 +52,17 @@ extension SongPicker : MPMediaPickerControllerDelegate {
             storage.persistanceidIndex[songs.persistentID.description] = index
             progressBar.amountOFAnalizingSongs += 1
         }
-        //analize(BPM) in background
+        //analyse(BPM) in background
         NotificationCenter.default.post(name: Notification.Name(rawValue: "load"), object: nil)
         DispatchQueue.global(qos: .utility).async {
             self.detector.analize(self.progressBar)
         }
     }
     
+    //Alert massage about being patient while the process of analyzing songs
+    //Should appear only once
     func showAnalyzeAlert() {
-        let alert = UIAlertController(title: "Keep calm", message: "We are analyzing your songs. It will take some time", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "Keep calm", message: "We are analysing your songs. It will take some time", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
         sender.present(alert, animated: true, completion: nil)
     }

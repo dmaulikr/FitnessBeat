@@ -86,14 +86,5 @@ extension LibraryViewController {
         //load data here
         self.table.reloadData()
     }
-    
-    func showAnalyzeAlert() {
-        let alert = UIAlertController(title: "Keep calm", message: "We are analyzing your songs. It will take awhile", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    
-    
 }
 

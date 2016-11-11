@@ -10,15 +10,19 @@ import Foundation
 import MediaPlayer
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
+//fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+//  switch (lhs, rhs) {
+//  case let (l?, r?):
+//    return l < r
+//  case (nil, _?):
+//    return true
+//  default:
+//    return false
+//  }
+//}
+
+enum consatnts {
+    
 }
 
 
@@ -27,13 +31,6 @@ class Storage: NSObject {
     //SINGLETON Contains all data
     static let sharedInstance = Storage()
     let defaults = UserDefaults.standard
-    
-    //var allSongs = [Float : [Song]]() //all songs with bpm, existing only during execution
-    //var songs = [Float : [Song]]()
-    //var playlistSongs = [Float : [Song]]() //songs for playlist
-    //var storedAllSongs = [String : Float]() //UserDefaults persistanceID : BPM
-    //var storedPlaylistSongs = [String : Float]() //UserDefaults for playlist persistanceID : BPM
-    
     
     var playlistIndexes = [Int]()
     var bpmIndexDictionary  = [Int : [Int]]()
@@ -102,7 +99,12 @@ class Storage: NSObject {
         }
         //sort by index
         arrayOfSongs.sort {(song1: Song, song2: Song) -> Bool in
-            song1.index < song2.index
+            if let index1 = song1.index {
+                if let index2 = song2.index {
+                   return index1 < index2
+                }
+            }
+            return true
         }
         return arrayOfSongs
     }
@@ -132,10 +134,6 @@ class Storage: NSObject {
     }
     
     func getSongFromUrl(_ url: URL) -> Song? {
-//        let predicate = MPMediaPropertyPredicate(value: url, forProperty: MPMediaItemPropertyAssetURL )
-//        let songQuery = MPMediaQuery()
-//        songQuery.addFilterPredicate(predicate)
-//        if let items = songQuery.items where items.count > 0 { return Song(item: items[0], bpm: <#T##Int?#>, index: <#T##Int?#>)
         for song in songs {
             if song.URL == url {
                 return song
@@ -143,32 +141,6 @@ class Storage: NSObject {
         }
         return nil
     }
-    
-    //convert saved in UserDefaults dictionaries to array of Songs
-    /*
-    func findSongWithPersistentIdString(persistentIDString: [String : Float]) -> [Float : [Song]] {
-        var dicOfSongs = [Float : [Song]]()
-        for songs in persistentIDString{
-            let predicate = MPMediaPropertyPredicate(value: songs.0, forProperty: MPMediaItemPropertyPersistentID)
-            let songQuery = MPMediaQuery()
-            songQuery.addFilterPredicate(predicate)
-            if let items = songQuery.items where items.count > 0 {
-                if (dicOfSongs[songs.1] != nil) {
-                    if dicOfSongs[songs.1]!.count == 0 {
-                        var arrayOfSongs = [Song]()
-                        arrayOfSongs.append(Song.init(item: items[0], bpm: songs.1))
-                        dicOfSongs[songs.1] = arrayOfSongs
-                    } else {
-                        dicOfSongs[songs.1]!.append(Song.init(item: items[0], bpm: songs.1))
-                    }
-                } else {
-                    print("value for key \(songs.1) does not exist in dic")
-                }
-            }
-        }
-        return dicOfSongs
-    }
-    */
     
     //save array of Song to dictionary for storing in UserDefaults
     func copySongsInDictionary(_ arrayOfSongs: [Song]) -> [String : Int] {
@@ -182,57 +154,4 @@ class Storage: NSObject {
         return dicOfSongs
     }
     
-    /*
-    func copyDicSongsInDictionary(dicOfAllSongs: [Float : [Song]]) -> [String : Float] {
-        var dicOfSongs = [String : Float]()
-        for arrayOfSongs in dicOfAllSongs {
-            for song in arrayOfSongs.1 {
-                guard let songID = song.id else {
-                    continue
-                }
-                dicOfSongs[songID] = song.bpm
-            }
-        }
-        return dicOfSongs
-    }
-    
-    func getSong(numb: Int) -> Song {
-        var i = 0
-        for arrayOfSongs in allSongs {
-            for song in arrayOfSongs.1 {
-                if i==numb {
-                    return song
-                } else {
-                    i = i + 1
-                }
-            }
-        }
-    }
-    
-    func findAndDel(numb: Int) -> Bool {
-        var i = 0
-        for arrayOfSongs in allSongs {
-            for song in arrayOfSongs.1 {
-                var j=0
-                if i==numb {
-                    allSongs[arrayOfSongs.0]?.removeAtIndex(j)
-                    
-                } else {
-                    i = i + 1
-                    j = j + 1
-                }
-            }
-        }
-
-    }
-
-    
-    //sort lists of Songs by bpm
-    func sortAllSongsByBpm() {
-        allSongs.sortInPlace {(song1: Song, song2: Song) -> Bool in
-            song1.bpm > song2.bpm
-        }
-    }
- */
-
 }
