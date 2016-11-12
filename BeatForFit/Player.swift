@@ -104,6 +104,8 @@ class Player : NSObject, AVAudioPlayerDelegate {
             // make player ready (i.e. preload buffer)
             self.audioPlayer.prepareToPlay()
             
+            currentSong = Storage.sharedInstance.getSongFromUrl(playListURL[currentTrack])
+            
         } catch let error as NSError {
             // print error in friendly way
             print(error.localizedDescription)

@@ -62,9 +62,13 @@ extension SongPicker : MPMediaPickerControllerDelegate {
     //Alert massage about being patient while the process of analyzing songs
     //Should appear only once
     func showAnalyzeAlert() {
-        let alert = UIAlertController(title: "Keep calm", message: "We are analysing your songs. It will take some time", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-        sender.present(alert, animated: true, completion: nil)
+        if !storage.lounchedBefore {
+            let alert = UIAlertController(title: "Keep calm", message: "We are analysing your songs. It will take some time", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+            storage.lounchedBefore = true
+            storage.defaults.set(true, forKey: Constants.Settings.louchedBefore.rawValue)
+            sender.present(alert, animated: true, completion: nil)
+        }
     }
 
 
