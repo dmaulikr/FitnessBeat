@@ -93,7 +93,7 @@
                                 <state key="normal" backgroundImage="repeat"/>
                                 <connections>
                                     <action selector="repeatButton:" destination="jkj-zb-ztC" eventType="touchUpInside" id="YDn-kX-9f3"/>
-                                    <action selector="repetTouched:" destination="jkj-zb-ztC" eventType="touchUpInside" id="Qvq-3d-kka"/>
+                                    <action selector="repeatTouched:" destination="jkj-zb-ztC" eventType="touchUpInside" id="pJq-Vg-08j"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ufw-WJ-55w">
@@ -291,18 +291,18 @@
                                         <rect key="frame" x="0.0" y="30" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="d9i-wT-iUR" id="PdY-O9-afL">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Some songs may have double pace." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Deg-ws-4EH">
-                                                    <rect key="frame" x="15" y="5" width="220" height="18"/>
+                                                    <rect key="frame" x="15" y="4" width="220" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-Light" family="Apple SD Gothic Neo" pointSize="15"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Do 2 steps at one beat" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Di5-H3-IfO">
-                                                    <rect key="frame" x="15" y="23" width="131.5" height="17"/>
+                                                    <rect key="frame" x="15" y="22" width="132" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-Light" family="Apple SD Gothic Neo" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

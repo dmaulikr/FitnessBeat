@@ -164,6 +164,9 @@ class Player : NSObject, AVAudioPlayerDelegate {
         } else if isRepeat {
             self.currentTrack = 0
         } else {
+            if self.audioPlayer.isPlaying {
+                self.audioPlayer.stop()
+            }
             return
         }
         

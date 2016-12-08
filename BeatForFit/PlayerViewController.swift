@@ -28,17 +28,15 @@ class PlayerViewController: UIViewController {
     @IBAction func playButtonPushed(_ sender: AnyObject) {
         if player.isPlaying {
             player.pauseTrack()
-            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
         } else if player.isPoused {
             player.playTrack()
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
-        playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         playCurrentBpm()
         }
+        setTitle()
     }
     
-    @IBAction func repetTouched(_ sender: UIButton) {
+    @IBAction func repeatTouched (_ sender: UIButton) {
         player.isRepeat = !player.isRepeat
         if player.isRepeat {
             sender.setImage(UIImage(named: "hightRep"), for: UIControlState())
@@ -47,6 +45,7 @@ class PlayerViewController: UIViewController {
         }
         
     }
+    
     @IBAction func repeatButton(_ sender: AnyObject) {
        // player.isRepeat = !player.isRepeat
 //        if player.isRepeat {
@@ -59,6 +58,7 @@ class PlayerViewController: UIViewController {
 //        //repeatButtonOutlet.setTitle("↪️", forState: UIControlState.Normal)
 //        }
     }
+    
     func playCurrentBpm(playSong: Bool = true) {
         var arrayOfUrl = [URL]()
         if let bpmText = bpmLabel.text {
@@ -75,7 +75,6 @@ class PlayerViewController: UIViewController {
                 if playSong {
                     player.playTrack()
                 }
-                setTitle()
             } else {
                 showNoSongAlert()
             }
@@ -101,6 +100,14 @@ class PlayerViewController: UIViewController {
                 MPMediaItemPropertyArtist: artist!
             ]
         }
+        if player.isPlaying {
+            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
+        } else if player.isPoused {
+            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
+        } else {
+            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
+        }
+
     }
     
     @IBAction func suffleTouched(_ sender: UIButton) {
@@ -115,9 +122,7 @@ class PlayerViewController: UIViewController {
     @IBAction func nextSong(_ sender: AnyObject) {
         if player.isPlaying || player.isPoused {
             player.playNextTrack()
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
             playCurrentBpm()
             player.playNextTrack()
         }
@@ -127,9 +132,7 @@ class PlayerViewController: UIViewController {
     @IBAction func previousSong(_ sender: AnyObject) {
         if player.isPlaying || player.isPoused {
             player.playPrevTrack()
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
             playCurrentBpm()
             player.playPrevTrack()
         }
@@ -143,7 +146,6 @@ class PlayerViewController: UIViewController {
         bpmLabel.text = allBpm[currentBpmIndex].description
         if player.isPlaying {
             playCurrentBpm()
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
             playCurrentBpm(playSong: false)
         }
@@ -155,7 +157,6 @@ class PlayerViewController: UIViewController {
         bpmLabel.text = allBpm[currentBpmIndex].description
         if player.isPlaying {
             playCurrentBpm()
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
             playCurrentBpm(playSong: false)
         }
@@ -177,21 +178,6 @@ extension PlayerViewController {
         self.becomeFirstResponder()
         UIApplication.shared.beginReceivingRemoteControlEvents()
         repeatButtonOutlet.setImage(UIImage(named: "hightRep"), for: UIControlState())
-//        let mpic = MPNowPlayingInfoCenter.default()
-//        if let song = player.currentSong {
-//            var artist = song.artist
-//            var name = song.name
-//            if artist == nil {
-//                artist = ""
-//            }
-//            if name == nil {
-//                name = ""
-//            }
-//            mpic.nowPlayingInfo = [
-//                MPMediaItemPropertyTitle: name!,
-//                MPMediaItemPropertyArtist: artist!
-//            ]
-//        }
         navigationController?.navigationBar.setBackgroundImage(UIImage(named: "bar"), for: .default)    }
     
     override var canBecomeFirstResponder : Bool {
@@ -199,18 +185,14 @@ extension PlayerViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        //playArray(storage.arrayOfUrlPlaylist)
         getAllBpm(storage.bpmIndexDictionary)
         if player.isPlaying {
             bpmLabel.text = player.currentBpm?.description
-            playButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else if player.isPoused {
             bpmLabel.text = player.currentBpm?.description
-            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
         }
         else {
             bpmLabel.text = allBpm.first?.description
-            playButton.setImage(UIImage(named: "Play"), for: UIControlState())
         }
         if !player.isPlaying && !player.isPoused {
             playCurrentBpm(playSong: false)
@@ -226,124 +208,22 @@ extension PlayerViewController {
         let rc = event!.subtype
         switch rc {
         case .remoteControlTogglePlayPause:
-//            if player.isPlaying {
-//                player.pauseTrack()
-//            } else if player.isPoused {
-//                player.playTrack()
-//            } else {
-//                playCurrentBpm()
-//            }
             self.playButtonPushed(Int() as AnyObject)
+            
         case .remoteControlPlay:
             self.playButtonPushed(Int() as AnyObject)
-//            if player.isPoused {
-//                player.playTrack()
-//            } else {
-//                playCurrentBpm()
-//            }
 
         case .remoteControlPause:
             player.pauseTrack()
             
         case .remoteControlNextTrack:
             self.nextSong(Int() as AnyObject)
-//            player.playNextTrack()
-//            bpmLabel.text = player.currentBpm?.description
-//            setTitle()
+            
         case .remoteControlPreviousTrack:
             self.previousSong(Int() as AnyObject)
-//            player.playPrevTrack()
-//            bpmLabel.text = player.currentBpm?.description
-//            setTitle()
+            
         default:break
         }
     }
 
 }
-
-    /* The delegate message that will let us know that the player has finished playing an audio file
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
-        print("Finished playing the song")
-    }
-    
-    override func canBecomeFirstResponder() -> Bool {
-        return true
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        self.becomeFirstResponder()
-        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        /*
-         for displaying information about the song in RemoteControlCentre
-        let mpic = MPNowPlayingInfoCenter.defaultCenter()
-        mpic.nowPlayingInfo = [
-            MPMediaItemPropertyTitle: self.titleLabel!.text!,
-            MPMediaItemPropertyArtist: self.authorLabel!.text!
-        ]
- 
- 
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-//        self.observer = NSNotificationCenter.defaultCenter().addObserverForName(
-//        AVAudioSessionInterruptionNotification, object: nil, queue: nil) {
-//            [weak self](n:NSNotification) in
-//            guard let why =
-//                n.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
-//                else {return}
-//            guard let type = AVAudioSessionInterruptionType(rawValue: why)
-//                else {return}
-//            if type == .Ended {
-//                guard let opt =
-//                    n.userInfo![AVAudioSessionInterruptionOptionKey] as? UInt
-//                    else {return}
-//                let opts = AVAudioSessionInterruptionOptions(rawValue: opt)
-//                if opts.contains(.ShouldResume) {
-//                    self?.player.prepareToPlay()
-//                    self?.player.play()
-//                }
-//            }
-//        }
-        /*
-        let dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        dispatch_async(dispatchQueue, {[weak self] in
-                //let mainBundle = NSBundle.mainBundle()
-                /* Find the location of our file to feed to the audio player */
-                let filePath = self!.storage.allSongs[1].URL?.description
-                if let path = filePath{
-                    let fileData = NSData(contentsOfFile: path)
-                    /* Start the audio player */
-                    self!.audioPlayer = try? AVAudioPlayer(data: fileData!)    //(data: fileData, error: &error)
-                    /* Did we get an instance of AVAudioPlayer? */
-                    if let player = self!.audioPlayer{
-                        /* Set the delegate and start playing */
-                        player.delegate = self
-                        if player.prepareToPlay() && player.play(){
-                            /* Successfully started playing */
-                        }else{
-                            /* Failed to play */
-                        } }else{
-                        /* Failed to instantiate AVAudioPlayer */
-                    } }
-                })
-    }
- */
-
-    /*
-    func remoteControlReceivedWithEvent(event: UIEvent?) {
-        let rc = event!.subtype
-        let p = audioPlayer  // our AVAudioPlayer
-        switch rc {
-        case .RemoteControlTogglePlayPause:
-            if p.playing { p.pause() } else { p.play() }
-        case .RemoteControlPlay:
-            p.play()
-        case .RemoteControlPause:
-            p.pause()
-        default:break
-        }
-    }
-    */
-}*/*/
